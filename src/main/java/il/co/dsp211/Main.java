@@ -50,11 +50,7 @@ public class Main
 //						{
 //							context.write(text, one);
 //						}
-//						catch (IOException e)
-//						{
-//							e.printStackTrace();
-//						}
-//						catch (InterruptedException e)
+//						catch (IOException | InterruptedException e)
 //						{
 //							e.printStackTrace();
 //						}
