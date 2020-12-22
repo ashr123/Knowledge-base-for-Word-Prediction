@@ -13,6 +13,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;
 
 import java.io.IOException;
 import java.util.Map;
@@ -65,12 +66,15 @@ public class Step1DivideCorpus
 		}
 	}
 
+	/**
+	 * As in {@link HashPartitioner#getPartition(java.lang.Object, java.lang.Object, int)}, #official😎
+	 */
 	public static class PartitionerClass extends Partitioner<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/>
 	{
 		@Override
 		public int getPartition(Text text, BooleanLongPair booleanLongPair, int numPartitions)
 		{
-			return Math.abs(text.hashCode()) % numPartitions;
+			return (text.hashCode() & Integer.MAX_VALUE) % numPartitions;
 		}
 	}
 }
