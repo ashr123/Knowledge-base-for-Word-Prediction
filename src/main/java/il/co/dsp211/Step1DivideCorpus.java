@@ -73,7 +73,7 @@ public class Step1DivideCorpus
 
 	public static class CountAndZip extends Reducer<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/, Text/*3-gram*/, LongLongPair/*<first group's occurrences, second group's occurrences>*/>
 	{
-		Counter counter;
+		private Counter counter;
 
 		@Override
 		protected void setup(Context context) throws IOException, InterruptedException
