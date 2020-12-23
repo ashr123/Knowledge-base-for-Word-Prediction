@@ -78,7 +78,7 @@ public class Step1DivideCorpus
 		@Override
 		protected void setup(Context context) throws IOException, InterruptedException
 		{
-			counter = context.getCounter(NCounter.N_COUNTER);
+			counter = context.getCounter(NCounter.N_COUNTER); // TODO check if a counter need to created or if it created automatically
 		}
 
 		@Override
