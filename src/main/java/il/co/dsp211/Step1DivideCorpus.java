@@ -2,20 +2,23 @@ package il.co.dsp211;
 
 import il.co.dsp211.utils.BooleanLongPair;
 import il.co.dsp211.utils.LongLongPair;
+import il.co.dsp211.utils.NCounter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -30,7 +33,7 @@ public class Step1DivideCorpus
 //		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(BooleanLongPair.class);
 
-//		job.setCombinerClass(Count.class);
+		job.setCombinerClass(Count.class);
 
 		job.setReducerClass(CountAndZip.class);
 		job.setOutputKeyClass(Text.class);
@@ -56,38 +59,35 @@ public class Step1DivideCorpus
 		}
 	}
 
-//	public static class Count extends Reducer<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/, Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/>
-//	{
-//		@Override
-//		protected void reduce(Text triGram, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
-//		{
-//			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
-//					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.counting()));
-//			context.write(triGram, new BooleanLongPair(true, map.get(true)));
-//			context.write(triGram, new BooleanLongPair(false, map.get(false)));
-//		}
-//	}
-
-	public static class CountAndZip extends Reducer<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/, Text/*3-gram*/, LongLongPair/*<first group's occurrences, second group's occurrences>*/>
+	public static class Count extends Reducer<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/, Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/>
 	{
 		@Override
 		protected void reduce(Text triGram, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
 		{
 			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
 					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.counting()));
-			context.write(triGram, new LongLongPair(map.get(true), map.get(false)));
+			context.write(triGram, new BooleanLongPair(true, map.get(true)));
+			context.write(triGram, new BooleanLongPair(false, map.get(false)));
 		}
 	}
 
-	/**
-	 * As in {@link org.apache.hadoop.mapreduce.lib.partition.HashPartitioner#getPartition(java.lang.Object, java.lang.Object, int)}, #official😎
-	 */
-	public static class HashPartitioner extends Partitioner<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/>
+	public static class CountAndZip extends Reducer<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/, Text/*3-gram*/, LongLongPair/*<first group's occurrences, second group's occurrences>*/>
 	{
+		Counter counter;
+
 		@Override
-		public int getPartition(Text text, BooleanLongPair booleanLongPair, int numPartitions)
+		protected void setup(Context context) throws IOException, InterruptedException
 		{
-			return (text.hashCode() & Integer.MAX_VALUE) % numPartitions;
+			counter = context.getCounter(NCounter.N_COUNTER);
+		}
+
+		@Override
+		protected void reduce(Text triGram, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
+		{
+			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
+					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.counting()));
+			context.write(triGram, new LongLongPair(map.get(true), map.get(false)));
+			counter.increment(map.values().stream().mapToLong(Long::longValue).sum());
 		}
 	}
 }

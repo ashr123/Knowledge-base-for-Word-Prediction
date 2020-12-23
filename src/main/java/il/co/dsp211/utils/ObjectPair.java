@@ -37,7 +37,7 @@ public class ObjectPair<K, V> implements Writable
 		value = (V) ObjectWritable.readObject(in, null);
 	}
 
-	public K isKey()
+	public K getKey()
 	{
 		return key;
 	}
