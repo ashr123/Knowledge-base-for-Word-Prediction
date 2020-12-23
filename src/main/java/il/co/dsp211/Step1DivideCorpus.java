@@ -30,6 +30,8 @@ public class Step1DivideCorpus
 //		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(BooleanLongPair.class);
 
+//		job.setCombinerClass(Count.class);
+
 		job.setReducerClass(CountAndZip.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(LongLongPair.class);
@@ -54,7 +56,19 @@ public class Step1DivideCorpus
 		}
 	}
 
-	public static class CountAndZip extends Reducer<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/, Text, LongLongPair>
+//	public static class Count extends Reducer<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/, Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/>
+//	{
+//		@Override
+//		protected void reduce(Text triGram, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
+//		{
+//			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
+//					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.counting()));
+//			context.write(triGram, new BooleanLongPair(true, map.get(true)));
+//			context.write(triGram, new BooleanLongPair(false, map.get(false)));
+//		}
+//	}
+
+	public static class CountAndZip extends Reducer<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/, Text/*3-gram*/, LongLongPair/*<first group's occurrences, second group's occurrences>*/>
 	{
 		@Override
 		protected void reduce(Text triGram, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
