@@ -18,7 +18,6 @@ import org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -65,9 +64,11 @@ public class Step1DivideCorpus
 		protected void reduce(Text triGram, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
 		{
 			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
-					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.counting()));
-			context.write(triGram, new BooleanLongPair(true, map.get(true)));
-			context.write(triGram, new BooleanLongPair(false, map.get(false)));
+					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.summingLong(BooleanLongPair::getValue)));
+			if (map.get(true) != null)
+				context.write(triGram, new BooleanLongPair(true, map.get(true)));
+			if (map.get(false) != null)
+				context.write(triGram, new BooleanLongPair(false, map.get(false)));
 		}
 	}
 
@@ -76,7 +77,7 @@ public class Step1DivideCorpus
 		private Counter counter;
 
 		@Override
-		protected void setup(Context context) throws IOException, InterruptedException
+		protected void setup(Context context)
 		{
 			counter = context.getCounter(NCounter.N_COUNTER); // TODO check if a counter need to created or if it created automatically
 		}
@@ -85,9 +86,10 @@ public class Step1DivideCorpus
 		protected void reduce(Text triGram, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
 		{
 			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
-					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.counting()));
-			context.write(triGram, new LongLongPair(map.get(true), map.get(false)));
+					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.summingLong(BooleanLongPair::getValue)));
+			context.write(triGram, new LongLongPair(map.get(true) != null ? map.get(true) : 0, map.get(false) != null ? map.get(false) : 0));
 			counter.increment(map.values().stream().mapToLong(Long::longValue).sum());
+//			counter.increment(map.get(true) + map.get(false));
 		}
 	}
 }
