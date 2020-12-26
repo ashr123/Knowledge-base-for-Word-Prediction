@@ -53,8 +53,8 @@ public class Step1DivideCorpus
 		@Override
 		protected void map(LongWritable key, Text value/*<3-gram	year	occurrences	pages	books>*/, Context context) throws IOException, InterruptedException
 		{
-			String[] components = value.toString().split("\t"); // TODO check about regex
-			context.write(new Text(components[0]), new BooleanLongPair(key.get() % 2 == 0, Long.parseLong(components[2])));
+			String[] record = value.toString().split("\t"); // TODO check about regex
+			context.write(new Text(record[0]), new BooleanLongPair(key.get() % 2 == 0, Long.parseLong(record[2])));
 		}
 	}
 
@@ -65,9 +65,9 @@ public class Step1DivideCorpus
 		{
 			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
 					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.summingLong(BooleanLongPair::getValue)));
-			if (map.get(true) != null)
+			if (map.containsKey(true))
 				context.write(triGram, new BooleanLongPair(true, map.get(true)));
-			if (map.get(false) != null)
+			if (map.containsKey(false))
 				context.write(triGram, new BooleanLongPair(false, map.get(false)));
 		}
 	}
@@ -87,7 +87,7 @@ public class Step1DivideCorpus
 		{
 			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
 					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.summingLong(BooleanLongPair::getValue)));
-			context.write(triGram, new LongLongPair(map.get(true) != null ? map.get(true) : 0, map.get(false) != null ? map.get(false) : 0));
+			context.write(triGram, new LongLongPair(map.containsKey(true) ? map.get(true) : 0, map.containsKey(false) ? map.get(false) : 0));
 			counter.increment(map.values().stream().mapToLong(Long::longValue).sum());
 //			counter.increment(map.get(true) + map.get(false));
 		}

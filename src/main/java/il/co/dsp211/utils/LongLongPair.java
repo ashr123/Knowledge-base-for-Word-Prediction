@@ -1,6 +1,8 @@
 package il.co.dsp211.utils;
 
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -19,6 +21,12 @@ public class LongLongPair implements Writable
 	{
 		this.key = key;
 		this.value = value;
+	}
+
+	public static LongLongPair of(String string)
+	{
+		String[] values = string.split("🤠");
+		return new LongLongPair(Long.parseLong(values[0]), Long.parseLong(values[1]));
 	}
 
 	public long getKey()
@@ -51,10 +59,7 @@ public class LongLongPair implements Writable
 	@Override
 	public String toString()
 	{
-		return "LongLongPair{" +
-		       "key=" + key +
-		       ", value=" + value +
-		       '}';
+		return key + "🤠" + value;
 	}
 
 	@Override

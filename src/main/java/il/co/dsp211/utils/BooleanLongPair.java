@@ -22,6 +22,12 @@ public class BooleanLongPair implements Writable
 		this.value = value;
 	}
 
+	public static BooleanLongPair of(String string)
+	{
+		String[] values = string.split("🤠");
+		return new BooleanLongPair(Boolean.parseBoolean(values[0]), Long.parseLong(values[1]));
+	}
+
 	@Override
 	public void write(DataOutput out) throws IOException
 	{
@@ -66,9 +72,6 @@ public class BooleanLongPair implements Writable
 	@Override
 	public String toString()
 	{
-		return "BooleanLongPair{" +
-		       "key=" + key +
-		       ", value=" + value +
-		       '}';
+		return key + "🤠" + value;
 	}
 }
