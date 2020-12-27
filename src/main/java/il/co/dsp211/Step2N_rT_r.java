@@ -73,7 +73,7 @@ public class Step2N_rT_r
 //									(longLongPair, longWritable) -> new LongLongPair(longLongPair.getKey() + longWritable.get(), longLongPair.getValue() + 1),
 //									(longLongPair, longLongPair2) -> new LongLongPair(longLongPair.getKey() + longLongPair2.getKey(), longLongPair.getValue() + longLongPair2.getValue())));
 //
-//
+////
 ////			int sum = 0, counter = 0;
 ////			for (final LongWritable longWritable : values)
 ////			{
@@ -81,10 +81,10 @@ public class Step2N_rT_r
 ////				counter++;
 ////			}
 ////			context.write(key, new LongLongPair(sum, counter));
-//		}
+////		}
 //	}
 
-	public static class T_rN_rReducer extends Reducer<BooleanLongPair, LongLongPair, BooleanLongPair, LongLongPair>
+	public static class T_rN_rReducer extends Reducer<BooleanLongPair, LongWritable, BooleanLongPair, LongLongPair>
 	{
 		/**
 		 *
@@ -93,19 +93,20 @@ public class Step2N_rT_r
 		 * @param context ⟨⟨group, occurrences⟩, ⟨T_r, N_r⟩⟩
 		 */
 		@Override
-		protected void reduce(BooleanLongPair key, Iterable<LongLongPair> values, Context context) throws IOException, InterruptedException
+		protected void reduce(BooleanLongPair key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException
 		{
 			context.write(key,
 					StreamSupport.stream(values.spliterator(), true)
 							.reduce(new LongLongPair(0, 0),
+									(longLongPair, longWritable) -> new LongLongPair(longLongPair.getKey() + longWritable.get(), longLongPair.getValue() + 1),
 									(longLongPair, longLongPair2) -> new LongLongPair(longLongPair.getKey() + longLongPair2.getKey(), longLongPair.getValue() + longLongPair2.getValue())));
 
 
 //			int sum = 0, counter = 0;
-//			for (final LongLongPair longLongPair : values)
+//			for (final LongWritable longWritable : values)
 //			{
-//				sum += longLongPair.getKey();
-//				counter += longLongPair.getValue();
+//				sum += longWritable.get();
+//				counter++;
 //			}
 //			context.write(key, new LongLongPair(sum, counter));
 		}
