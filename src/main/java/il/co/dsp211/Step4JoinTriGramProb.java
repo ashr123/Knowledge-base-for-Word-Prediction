@@ -35,7 +35,7 @@ public class Step4JoinTriGramProb
 		/**
 		 * @param key     position in file
 		 * @param value   ⟨r, p⟩
-		 * @param context ⟨⟨{@code false}, r⟩, p⟩
+		 * @param context ⟨⟨{@code false}, r⟩, p (as {@link Text})⟩
 		 */
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
