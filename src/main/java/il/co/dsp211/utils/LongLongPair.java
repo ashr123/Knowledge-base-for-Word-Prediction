@@ -1,15 +1,13 @@
 package il.co.dsp211.utils;
 
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.Writable;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Objects;
 
-public class LongLongPair implements Writable
+public class LongLongPair implements WritableComparable<LongLongPair>
 {
 	private long key, value;
 
@@ -74,5 +72,12 @@ public class LongLongPair implements Writable
 	{
 		key = in.readLong();
 		value = in.readLong();
+	}
+
+	@Override
+	public int compareTo(LongLongPair o)
+	{
+		final int valueCompare = Long.compare(value, o.value);
+		return valueCompare == 0 ? Long.compare(key, o.key) : valueCompare;
 	}
 }

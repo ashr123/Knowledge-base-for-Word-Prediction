@@ -3,18 +3,11 @@ package il.co.dsp211;
 import il.co.dsp211.utils.BooleanLongPair;
 import il.co.dsp211.utils.LongLongPair;
 import il.co.dsp211.utils.NCounter;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;
-import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;
 
 import java.io.IOException;
 import java.util.Map;
@@ -23,33 +16,13 @@ import java.util.stream.StreamSupport;
 
 public class Step1DivideCorpus
 {
-	public static void main(String... args) throws IOException, ClassNotFoundException, InterruptedException
+	public static class Divider extends Mapper<LongWritable, Text, Text, BooleanLongPair>
 	{
-		Job job = Job.getInstance(new Configuration()); // TODO check purpose
-		job.setJarByClass(Step1DivideCorpus.class); // TODO check purpose
-
-		job.setMapperClass(Divider.class);
-//		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(BooleanLongPair.class);
-
-		job.setCombinerClass(Count.class);
-
-		job.setReducerClass(CountAndZip.class);
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(LongLongPair.class);
-
-		job.setInputFormatClass(SequenceFileInputFormat.class);
-
-		job.setPartitionerClass(HashPartitioner.class);
-
-		FileInputFormat.addInputPath(job, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-		System.exit(job.waitForCompletion(true) ? 0 : 1);
-	}
-
-	public static class Divider extends Mapper<LongWritable, Text, Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/>
-	{
+		/**
+		 * @param key     ⟨line number,
+		 * @param value   ⟨⟨w₁, w₂, w₃⟩, year, occurrences in this year, pages in this year, books in this year⟩⟩
+		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨group, occurrences in this year⟩⟩
+		 */
 		@Override
 		protected void map(LongWritable key, Text value/*<3-gram	year	occurrences	pages	books>*/, Context context) throws IOException, InterruptedException
 		{
@@ -58,21 +31,26 @@ public class Step1DivideCorpus
 		}
 	}
 
-	public static class Count extends Reducer<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/, Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/>
+	public static class Count extends Reducer<Text, BooleanLongPair, Text, BooleanLongPair>
 	{
+		/**
+		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
+		 * @param values  [⟨group, occurrences⟩]⟩
+		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨r₀₁, r₁₀⟩⟩
+		 */
 		@Override
-		protected void reduce(Text triGram, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
+		protected void reduce(Text key, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
 		{
 			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
 					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.summingLong(BooleanLongPair::getValue)));
 			if (map.containsKey(true))
-				context.write(triGram, new BooleanLongPair(true, map.get(true)));
+				context.write(key, new BooleanLongPair(true, map.get(true)));
 			if (map.containsKey(false))
-				context.write(triGram, new BooleanLongPair(false, map.get(false)));
+				context.write(key, new BooleanLongPair(false, map.get(false)));
 		}
 	}
 
-	public static class CountAndZip extends Reducer<Text/*3-gram*/, BooleanLongPair/*<true|false, occurrences>*/, Text/*3-gram*/, LongLongPair/*<first group's occurrences, second group's occurrences>*/>
+	public static class CountAndZip extends Reducer<Text, BooleanLongPair, Text, LongLongPair>
 	{
 		private Counter counter;
 
@@ -82,13 +60,20 @@ public class Step1DivideCorpus
 			counter = context.getCounter(NCounter.N_COUNTER); // TODO check if a counter need to created or if it created automatically
 		}
 
+		/**
+		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
+		 * @param values  [⟨group, occurrences⟩]⟩
+		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨r₀₁, r₁₀⟩⟩
+		 */
 		@Override
-		protected void reduce(Text triGram, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
+		protected void reduce(Text key, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
 		{
 			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
 					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.summingLong(BooleanLongPair::getValue)));
-			context.write(triGram, new LongLongPair(map.containsKey(true) ? map.get(true) : 0, map.containsKey(false) ? map.get(false) : 0));
-			counter.increment(map.values().stream().mapToLong(Long::longValue).sum());
+			context.write(key, new LongLongPair(map.containsKey(true) ? map.get(true) : 0, map.containsKey(false) ? map.get(false) : 0));
+			counter.increment(map.values().parallelStream()
+					.mapToLong(Long::longValue)
+					.sum());
 //			counter.increment(map.get(true) + map.get(false));
 		}
 	}

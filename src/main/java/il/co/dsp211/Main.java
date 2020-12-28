@@ -1,94 +1,52 @@
-//package il.co.dsp211;
-//
-//import org.apache.hadoop.conf.Configuration;
-//import org.apache.hadoop.fs.Path;
-//import org.apache.hadoop.io.IntWritable;
-//import org.apache.hadoop.io.Text;
-//import org.apache.hadoop.mapreduce.Job;
-//import org.apache.hadoop.mapreduce.Mapper;
-//import org.apache.hadoop.mapreduce.Reducer;
-//import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-//import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-//
-//import java.io.IOException;
-//import java.util.Iterator;
-//import java.util.Spliterators;
-//import java.util.StringTokenizer;
-//import java.util.stream.Stream;
-//import java.util.stream.StreamSupport;
-//
-//public class Main
-//{
-//	public static void main(String... args) throws Exception
-//	{
-//		Configuration conf = new Configuration();
-//		Job job = Job.getInstance(conf, "word count");
-//		job.setJarByClass(Main.class);
-//		job.setMapperClass(TokenizerMapper.class);
-//		job.setCombinerClass(IntSumReducer.class);
-//		job.setReducerClass(IntSumReducer.class);
-//		job.setOutputKeyClass(Text.class);
-//		job.setOutputValueClass(IntWritable.class);
-//		FileInputFormat.addInputPath(job, new Path(args[0]));
-//		FileOutputFormat.setOutputPath(job, new Path(args[1]));
-//		System.exit(job.waitForCompletion(true) ? 0 : 1);
-//	}
-//
-//	public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable>
-//	{
-//		private final static IntWritable one = new IntWritable(1);
-//		private Text word = new Text();
-//
-//		@Override
-//		public void map(Object key, Text value, Context context) throws IOException, InterruptedException
-//		{
-////			Stream.of(value.toString().split("[ \t\n\r\f]"))
-////					.map(Text::new)
-////					.forEach(text ->
-////					{
-////						try
-////						{
-////							context.write(text, one);
-////						}
-////						catch (IOException | InterruptedException e)
-////						{
-////							e.printStackTrace();
-////						}
-////					});
-//
-////			StringTokenizer itr = new StringTokenizer(value.toString());
-//			for (String text : (Iterable<String>) new StringTokenizer(value.toString()).asIterator())
-//			{
-//				word.set(text);
-//				context.write(word, one);
-//			}
-////			while (itr.hasMoreTokens())
-////			{
-////				word.set(itr.nextToken());
-////				context.write(word, one);
-////			}
-//		}
-//	}
-//
-//	public static class IntSumReducer extends Reducer<Text, IntWritable, Text, IntWritable>
-//	{
-//		private IntWritable result = new IntWritable();
-//
-//		@Override
-//		public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException
-//		{
-//			result.set(StreamSupport.stream(values.spliterator(), true)
-//					.mapToInt(IntWritable::get)
-//					.sum());
-//
-////			int sum = 0;
-////
-////			for (IntWritable val : values)
-////			{
-////				sum += val.get();
-////			}
-////			result.set(sum);
-//			context.write(key, result);
-//		}
-//	}
-//}
+package il.co.dsp211;
+
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClientBuilder;
+import com.amazonaws.services.elasticmapreduce.model.*;
+import com.amazonaws.services.elasticmapreduce.util.StepFactory;
+
+public class Main
+{
+	public static void main(String... args)
+	{
+		try
+		{
+			// create an EMR client using the credentials and region specified in order to create the cluster
+			System.out.println("The cluster ID is " + AmazonElasticMapReduceClientBuilder.standard()
+					.withCredentials(new AWSStaticCredentialsProvider(new ProfileCredentialsProvider("default").getCredentials()))
+					.withRegion(Regions.US_EAST_1)
+					.build()
+					// create the cluster
+					.runJobFlow(new RunJobFlowRequest()
+							.withName("MyClusterCreatedFromJava")
+							.withReleaseLabel("emr-6.2.0") // specifies the EMR release version label, we recommend the latest release
+							// create a step to enable debugging in the AWS Management Console
+							.withSteps(
+									new StepConfig("Enable debugging", new StepFactory().newEnableDebuggingStep())
+											.withActionOnFailure("TERMINATE_CLUSTER"),
+									new StepConfig("EMR", new HadoopJarStepConfig("s3://path/to/EMR.jar") // TODO
+											.withArgs(args))
+							)
+							.withLogUri("s3://path/to/my/emr/logs") // a URI in S3 for log files is required when debugging is enabled // TODO
+							.withServiceRole("EMR_DefaultRole") // replace the default with a custom IAM service role if one is used
+							.withJobFlowRole("EMR_EC2_DefaultRole") // replace the default with a custom EMR role for the EC2 instance profile if one is used
+							.withInstances(new JobFlowInstancesConfig()
+//									.withEc2SubnetId("subnet-12ab34c56") // TODO check if needed
+									.withEc2KeyName("RoysKey") // TODO maybe need to change
+									.withInstanceCount(3)
+									.withKeepJobFlowAliveWhenNoSteps(true)
+									.withMasterInstanceType("m5.xlarge")
+									.withSlaveInstanceType("m5.xlarge")
+									.withKeepJobFlowAliveWhenNoSteps(false)
+									.withPlacement(new PlacementType("us-east-1a")))) // TODO check if needed
+					.getJobFlowId());
+		}
+		catch (Exception e)
+		{
+			throw new AmazonClientException("Cannot load credentials from .aws/credentials file. Make sure that the credentials file exists and that the profile name is defined within it.", e);
+		}
+	}
+}

@@ -1,13 +1,13 @@
 package il.co.dsp211.utils;
 
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Objects;
 
-public class BooleanLongPair implements Writable
+public class BooleanLongPair implements WritableComparable<BooleanLongPair>
 {
 	private boolean key;
 	private long value;
@@ -73,5 +73,12 @@ public class BooleanLongPair implements Writable
 	public String toString()
 	{
 		return key + "🤠" + value;
+	}
+
+	@Override
+	public int compareTo(BooleanLongPair o)
+	{
+		final int valueCompare = Long.compare(value, o.value);
+		return valueCompare == 0 ? Boolean.compare(key, o.key) : valueCompare;
 	}
 }
