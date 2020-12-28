@@ -51,6 +51,9 @@ public class Step4JoinTriGramProb
 		private long currentR = 0;
 
 		/**
+		 * counting on proper sorting of {@link BooleanLongPair}: primary key: the {@code BooleanLongPair#value} (i.e r),
+		 * secondary field {@code BooleanLongPair#key} (i.e isTriGram) in such a way that first we'll get p and only then its corresponding tri-grams, per r
+		 *
 		 * @param key     ⟨⟨isTriGram, r⟩,
 		 * @param values  [p|⟨w₁, w₂, w₃⟩]⟩
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, p⟩
