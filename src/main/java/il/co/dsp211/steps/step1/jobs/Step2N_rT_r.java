@@ -1,7 +1,7 @@
-package il.co.dsp211;
+package il.co.dsp211.steps.step1.jobs;
 
-import il.co.dsp211.utils.BooleanLongPair;
-import il.co.dsp211.utils.LongLongPair;
+import il.co.dsp211.steps.utils.BooleanLongPair;
+import il.co.dsp211.steps.utils.LongLongPair;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;

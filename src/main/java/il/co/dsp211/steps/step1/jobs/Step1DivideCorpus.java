@@ -1,8 +1,8 @@
-package il.co.dsp211;
+package il.co.dsp211.steps.step1.jobs;
 
-import il.co.dsp211.utils.BooleanLongPair;
-import il.co.dsp211.utils.LongLongPair;
-import il.co.dsp211.utils.NCounter;
+import il.co.dsp211.steps.utils.BooleanLongPair;
+import il.co.dsp211.steps.utils.LongLongPair;
+import il.co.dsp211.steps.utils.NCounter;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;
@@ -24,7 +24,7 @@ public class Step1DivideCorpus
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨group, occurrences in this year⟩⟩
 		 */
 		@Override
-		protected void map(LongWritable key, Text value/*<3-gram	year	occurrences	pages	books>*/, Context context) throws IOException, InterruptedException
+		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 		{
 			String[] record = value.toString().split("\t"); // TODO check about regex
 			context.write(new Text(record[0]), new BooleanLongPair(key.get() % 2 == 0, Long.parseLong(record[2])));
