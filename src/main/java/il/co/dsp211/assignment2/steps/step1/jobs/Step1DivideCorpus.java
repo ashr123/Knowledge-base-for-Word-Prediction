@@ -1,8 +1,8 @@
-package il.co.dsp211.steps.step1.jobs;
+package il.co.dsp211.assignment2.steps.step1.jobs;
 
-import il.co.dsp211.steps.utils.BooleanLongPair;
-import il.co.dsp211.steps.utils.LongLongPair;
-import il.co.dsp211.steps.utils.NCounter;
+import il.co.dsp211.assignment2.steps.utils.BooleanLongPair;
+import il.co.dsp211.assignment2.steps.utils.LongLongPair;
+import il.co.dsp211.assignment2.steps.utils.NCounter;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;

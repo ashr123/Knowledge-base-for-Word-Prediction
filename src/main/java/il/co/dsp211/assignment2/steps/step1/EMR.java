@@ -1,10 +1,10 @@
-package il.co.dsp211.steps.step1;
+package il.co.dsp211.assignment2.steps.step1;
 
-import il.co.dsp211.steps.step1.jobs.*;
-import il.co.dsp211.steps.utils.BooleanLongPair;
-import il.co.dsp211.steps.utils.LongLongPair;
-import il.co.dsp211.steps.utils.NCounter;
-import il.co.dsp211.steps.utils.StringStringDoubleTriple;
+import il.co.dsp211.assignment2.steps.step1.jobs.*;
+import il.co.dsp211.assignment2.steps.utils.BooleanLongPair;
+import il.co.dsp211.assignment2.steps.utils.LongLongPair;
+import il.co.dsp211.assignment2.steps.utils.NCounter;
+import il.co.dsp211.assignment2.steps.utils.StringStringDoubleTriple;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;

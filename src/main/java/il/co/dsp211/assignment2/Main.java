@@ -1,4 +1,4 @@
-package il.co.dsp211;
+package il.co.dsp211.assignment2;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

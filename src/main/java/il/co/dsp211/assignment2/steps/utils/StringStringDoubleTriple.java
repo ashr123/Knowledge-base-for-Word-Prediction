@@ -1,4 +1,4 @@
-package il.co.dsp211.steps.utils;
+package il.co.dsp211.assignment2.steps.utils;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
