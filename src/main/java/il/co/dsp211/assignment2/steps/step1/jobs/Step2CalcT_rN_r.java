@@ -64,7 +64,7 @@ public class Step2CalcT_rN_r
 		protected void reduce(BooleanLongPair key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException
 		{
 			context.write(key,
-					StreamSupport.stream(values.spliterator(), true)
+					StreamSupport.stream(values.spliterator(), false)
 							.reduce(new LongLongPair(0, 0),
 									(longLongPair, longWritable) -> new LongLongPair(longLongPair.getKey() + longWritable.get(), longLongPair.getValue() + 1),
 									(longLongPair, longLongPair2) -> new LongLongPair(longLongPair.getKey() + longLongPair2.getKey(), longLongPair.getValue() + longLongPair2.getValue())));

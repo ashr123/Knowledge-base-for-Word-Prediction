@@ -46,7 +46,7 @@ public class Step3CalcProb
 		@Override
 		protected void reduce(LongWritable key, Iterable<LongLongPair> values, Context context) throws IOException, InterruptedException
 		{
-			final LongLongPair preP = StreamSupport.stream(values.spliterator(), true)
+			final LongLongPair preP = StreamSupport.stream(values.spliterator(), false)
 					.reduce(new LongLongPair(0, 0),
 							(longLongPair, longLongPair2) -> new LongLongPair(longLongPair.getKey() + longLongPair2.getKey(), longLongPair.getValue() + longLongPair2.getValue()));
 			context.write(key, new DoubleWritable(1.0 * preP.getKey() / (N * preP.getValue())));

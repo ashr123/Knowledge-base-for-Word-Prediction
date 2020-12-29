@@ -57,7 +57,7 @@ public class Step1DivideCorpus
 		@Override
 		protected void setup(Context context)
 		{
-			counter = context.getCounter(NCounter.N_COUNTER); // TODO check if a counter need to created or if it created automatically
+			counter = context.getCounter(NCounter.N_COUNTER);
 		}
 
 		/**
