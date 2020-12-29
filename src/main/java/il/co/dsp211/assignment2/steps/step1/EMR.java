@@ -44,8 +44,6 @@ public class EMR
 		job1.setOutputKeyClass(Text.class);
 		job1.setOutputValueClass(LongLongPair.class);
 
-		job1.setInputFormatClass(SequenceFileInputFormat.class);
-
 		job1.setPartitionerClass(HashPartitioner.class);
 
 		FileInputFormat.addInputPath(job1, new Path("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"));
@@ -63,15 +61,15 @@ public class EMR
 
 		System.out.println("Building job 2...");
 		Job job2 = Job.getInstance(conf); // TODO check purpose
-		job2.setJarByClass(Step2N_rT_r.class); // TODO check purpose
+		job2.setJarByClass(Step2CalcT_rN_r.class); // TODO check purpose
 
-		job2.setMapperClass(Step2N_rT_r.CalcThings.class);
+		job2.setMapperClass(Step2CalcT_rN_r.CalcThings.class);
 		job2.setMapOutputKeyClass(BooleanLongPair.class);
 		job2.setMapOutputValueClass(LongWritable.class);
 
 //		job2.setCombinerClass(Combiner.class);
 
-		job2.setReducerClass(Step2N_rT_r.T_rN_rReducer.class);
+		job2.setReducerClass(Step2CalcT_rN_r.T_rN_rReducer.class);
 		job2.setOutputKeyClass(BooleanLongPair.class);
 		job2.setOutputValueClass(LongLongPair.class);
 

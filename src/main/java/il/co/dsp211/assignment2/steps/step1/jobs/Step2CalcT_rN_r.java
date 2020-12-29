@@ -10,7 +10,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 import java.util.stream.StreamSupport;
 
-public class Step2N_rT_r
+public class Step2CalcT_rN_r
 {
 	public static class CalcThings extends Mapper<LongWritable, Text, BooleanLongPair, LongWritable>
 	{
