@@ -63,7 +63,7 @@ public class Step1DivideCorpus
 		/**
 		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
 		 * @param values  [⟨group, occurrences⟩]⟩
-		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨r₀₁, r₁₀⟩⟩
+		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨r₀, r₁⟩⟩
 		 */
 		@Override
 		protected void reduce(Text key, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
