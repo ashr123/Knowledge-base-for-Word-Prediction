@@ -22,7 +22,7 @@ public class Step2CalcT_rN_r
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 		{
-			LongLongPair value1 = LongLongPair.of(value.toString().split("\t")[1]);
+			final LongLongPair value1 = LongLongPair.of(value.toString().split("\t")[1]);
 			if (value1.getKey() != 0)
 				context.write(new BooleanLongPair(true, value1.getKey()), new LongWritable(value1.getValue()));
 			if (value1.getValue() != 0)

@@ -26,7 +26,7 @@ public class Step1DivideCorpus
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 		{
-			String[] record = value.toString().split("\t"); // TODO check about regex
+			final String[] record = value.toString().split("\t"); // TODO check about regex
 			context.write(new Text(record[0]), new BooleanLongPair(key.get() % 2 == 0, Long.parseLong(record[2])));
 		}
 	}

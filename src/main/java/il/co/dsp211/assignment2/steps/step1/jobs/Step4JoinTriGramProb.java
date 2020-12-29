@@ -25,7 +25,7 @@ public class Step4JoinTriGramProb
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 		{
 			final String[] split = value.toString().split("\t");
-			LongLongPair value1 = LongLongPair.of(split[1]);
+			final LongLongPair value1 = LongLongPair.of(split[1]);
 			context.write(new BooleanLongPair(true, value1.getKey() + value1.getValue()), new Text(split[0]));
 		}
 	}

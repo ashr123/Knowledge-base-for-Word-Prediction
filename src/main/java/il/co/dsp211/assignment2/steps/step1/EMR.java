@@ -141,7 +141,7 @@ public class EMR
 		job5.setMapOutputKeyClass(StringStringDoubleTriple.class);
 		job5.setMapOutputValueClass(Text.class);
 
-		job5.setReducerClass(Step5Sort.Finnisher.class);
+		job5.setReducerClass(Step5Sort.Finisher.class);
 		job5.setOutputKeyClass(Text.class);
 		job5.setOutputValueClass(DoubleWritable.class);
 

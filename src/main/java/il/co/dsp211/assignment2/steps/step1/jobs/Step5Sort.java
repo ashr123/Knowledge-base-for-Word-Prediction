@@ -27,7 +27,7 @@ public class Step5Sort
 		}
 	}
 
-	public static class Finnisher extends Reducer<StringStringDoubleTriple, Text, Text, DoubleWritable>
+	public static class Finisher extends Reducer<StringStringDoubleTriple, Text, Text, DoubleWritable>
 	{
 		/**
 		 * @param key     ⟨⟨w₁, w₂, p⟩,
