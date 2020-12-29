@@ -41,7 +41,7 @@ public class Step1DivideCorpus
 		@Override
 		protected void reduce(Text key, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
 		{
-			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
+			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), false)
 					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.summingLong(BooleanLongPair::getValue)));
 			if (map.containsKey(true))
 				context.write(key, new BooleanLongPair(true, map.get(true)));
@@ -68,7 +68,7 @@ public class Step1DivideCorpus
 		@Override
 		protected void reduce(Text key, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
 		{
-			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), true)
+			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), false)
 					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.summingLong(BooleanLongPair::getValue)));
 			context.write(key, new LongLongPair(map.containsKey(true) ? map.get(true) : 0, map.containsKey(false) ? map.get(false) : 0));
 			counter.increment(map.values().parallelStream()
