@@ -9,8 +9,9 @@
 	<version>1.0-SNAPSHOT</version>
 
 	<properties>
-		<maven.compiler.source>15</maven.compiler.source>
+		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Your exact Hadoop version here-->
 		<hadoop.version>3.2.1</hadoop.version>

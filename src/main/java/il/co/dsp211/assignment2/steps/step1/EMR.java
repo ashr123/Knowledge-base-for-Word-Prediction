@@ -51,9 +51,8 @@ public class EMR
 		FileInputFormat.addInputPath(job1, new Path("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"));
 		FileOutputFormat.setOutputPath(job1, new Path(args[1]));
 
-		System.out.println("""
-		                   Done building!
-		                   Starting job 1...""");
+		System.out.println("Done building!\n" +
+		                   "Starting job 1...");
 		System.out.println("Job 1 completed with success status: " + job1.waitForCompletion(true) + "!");
 
 		conf.setLong("N", job1.getCounters().findCounter(NCounter.N_COUNTER).getValue());
@@ -81,9 +80,8 @@ public class EMR
 		FileInputFormat.addInputPath(job2, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job2, new Path(args[1]));
 
-		System.out.println("""
-		                   Done building!
-		                   Starting job 2...""");
+		System.out.println("Done building!\n" +
+		                   "Starting job 2...");
 		System.out.println("Job 2 completed with success status: " + job2.waitForCompletion(true) + "!");
 
 		//--------------------------------------------------------------------------------------------------------------
@@ -105,9 +103,8 @@ public class EMR
 		FileInputFormat.addInputPath(job3, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job3, new Path(args[1]));
 
-		System.out.println("""
-		                   Done building!
-		                   Starting job 3...""");
+		System.out.println("Done building!\n" +
+		                   "Starting job 3...");
 		System.out.println("Job 3 completed with success status: " + job3.waitForCompletion(true) + "!");
 
 		//--------------------------------------------------------------------------------------------------------------
@@ -132,9 +129,8 @@ public class EMR
 
 		FileOutputFormat.setOutputPath(job4, new Path(args[1]));
 
-		System.out.println("""
-		                   Done building!
-		                   Starting job 4...""");
+		System.out.println("Done building!\n" +
+		                   "Starting job 4...");
 		System.out.println("Job 4 completed with success status: " + job4.waitForCompletion(true) + "!");
 
 		//--------------------------------------------------------------------------------------------------------------
@@ -156,9 +152,8 @@ public class EMR
 		FileInputFormat.addInputPath(job5, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job5, new Path(args[1]));
 
-		System.out.println("""
-		                   Done building!
-		                   Starting job 5...""");
+		System.out.println("Done building!\n" +
+		                   "Starting job 5...");
 		System.out.println("Job 5 completed with success status: " + job5.waitForCompletion(true) + "!\nExiting...");
 	}
 }
