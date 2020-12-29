@@ -46,7 +46,7 @@ public class EMR
 
 		job1.setPartitionerClass(HashPartitioner.class);
 
-		FileInputFormat.addInputPath(job1, new Path("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"));
+		FileInputFormat.addInputPath(job1, new Path(args[0]/*"s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"*/));
 		FileOutputFormat.setOutputPath(job1, new Path(args[1]));
 
 		System.out.println("Done building!\n" +
