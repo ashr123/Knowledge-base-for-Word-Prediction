@@ -67,7 +67,7 @@ public class StringStringDoubleTriple implements WritableComparable<StringString
 
 		return string1Compare != 0 ? string1Compare :
 		       (string2Compare = string2.compareTo(o.string2)) != 0 ? string2Compare :
-		       Double.compare(o.prob, prob);
+		       Double.compare(o.prob, prob); // Opposite relation
 	}
 
 	@Override
