@@ -32,7 +32,7 @@ public class EMR
 		Job job1 = Job.getInstance(conf);
 		job1.setJarByClass(Step1DivideCorpus.class);
 
-		job1.setInputFormatClass(SequenceFileInputFormat.class);
+//		job1.setInputFormatClass(SequenceFileInputFormat.class); // TODO: Commented for testing input
 
 		job1.setMapperClass(Step1DivideCorpus.Divider.class);
 		job1.setMapOutputKeyClass(Text.class);
@@ -46,8 +46,8 @@ public class EMR
 
 		job1.setPartitionerClass(HashPartitioner.class);
 
-		FileInputFormat.addInputPath(job1, new Path(args[0]/*"s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"*/));
-		FileOutputFormat.setOutputPath(job1, new Path(args[1]));
+		FileInputFormat.addInputPath(job1, new Path("/WordPred/Input"/*"s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"*/)); // TODO: Testing input
+		FileOutputFormat.setOutputPath(job1, new Path("/WordPred/Step1Output"));
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 1...");
@@ -67,16 +67,14 @@ public class EMR
 		job2.setMapOutputKeyClass(BooleanLongPair.class);
 		job2.setMapOutputValueClass(LongWritable.class);
 
-//		job2.setCombinerClass(Combiner.class);
-
 		job2.setReducerClass(Step2CalcT_rN_r.T_rN_rReducer.class);
 		job2.setOutputKeyClass(BooleanLongPair.class);
 		job2.setOutputValueClass(LongLongPair.class);
 
 		job2.setPartitionerClass(HashPartitioner.class);
 
-		FileInputFormat.addInputPath(job2, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job2, new Path(args[1]));
+		FileInputFormat.addInputPath(job2, new Path("/WordPred/Step1Output"));
+		FileOutputFormat.setOutputPath(job2, new Path("/WordPred/Step2Output"));
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 2...");
@@ -98,8 +96,8 @@ public class EMR
 
 		job3.setPartitionerClass(HashPartitioner.class);
 
-		FileInputFormat.addInputPath(job3, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job3, new Path(args[1]));
+		FileInputFormat.addInputPath(job3, new Path("/WordPred/Step2Output"));
+		FileOutputFormat.setOutputPath(job3, new Path("/WordPred/Step3Output"));
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 3...");
@@ -111,13 +109,11 @@ public class EMR
 		Job job4 = Job.getInstance(conf); // TODO check purpose
 		job4.setJarByClass(Step4JoinTriGramProb.class); // TODO check purpose
 
-		MultipleInputs.addInputPath(job4, new Path("job1"), TextInputFormat.class, Step4JoinTriGramProb.MapperTriGram.class);
-		MultipleInputs.addInputPath(job4, new Path("job2"), TextInputFormat.class, Step4JoinTriGramProb.MapperProb.class);
+		MultipleInputs.addInputPath(job4, new Path("/WordPred/Step1Output"), TextInputFormat.class, Step4JoinTriGramProb.MapperTriGram.class);
+		MultipleInputs.addInputPath(job4, new Path("/WordPred/Step3Output"), TextInputFormat.class, Step4JoinTriGramProb.MapperProb.class);
 
 		job4.setMapOutputKeyClass(BooleanLongPair.class);
 		job4.setMapOutputValueClass(Text.class);
-
-//		job4.setCombinerClass(Combiner.class);
 
 		job4.setReducerClass(Step4JoinTriGramProb.JoinerReducer.class);
 		job4.setOutputKeyClass(Text.class);
@@ -125,7 +121,7 @@ public class EMR
 
 		job4.setPartitionerClass(Step4JoinTriGramProb.JoinPartitioner.class);
 
-		FileOutputFormat.setOutputPath(job4, new Path(args[1]));
+		FileOutputFormat.setOutputPath(job4, new Path("/WordPred/Step4Output"));
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 4...");
@@ -147,8 +143,8 @@ public class EMR
 
 		job5.setPartitionerClass(HashPartitioner.class); // TODO Think about it
 
-		FileInputFormat.addInputPath(job5, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job5, new Path(args[1]));
+		FileInputFormat.addInputPath(job5, new Path("/WordPred/Step4Output"));
+		FileOutputFormat.setOutputPath(job5, new Path("/WordPred/Output"));
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 5...");
