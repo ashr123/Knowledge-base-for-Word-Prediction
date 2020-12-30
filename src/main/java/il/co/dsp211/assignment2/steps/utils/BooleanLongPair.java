@@ -24,7 +24,7 @@ public class BooleanLongPair implements WritableComparable<BooleanLongPair>
 
 	public static BooleanLongPair of(String string)
 	{
-		String[] values = string.split("🤠");
+		final String[] values = string.split("🤠");
 		return new BooleanLongPair(Boolean.parseBoolean(values[0]), Long.parseLong(values[1]));
 	}
 
@@ -79,6 +79,6 @@ public class BooleanLongPair implements WritableComparable<BooleanLongPair>
 	public int compareTo(BooleanLongPair o)
 	{
 		final int valueCompare = Long.compare(value, o.value);
-		return valueCompare == 0 ? Boolean.compare(key, o.key) : valueCompare;
+		return valueCompare != 0 ? valueCompare : Boolean.compare(key, o.key);
 	}
 }

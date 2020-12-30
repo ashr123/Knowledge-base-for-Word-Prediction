@@ -23,7 +23,7 @@ public class LongLongPair implements WritableComparable<LongLongPair>
 
 	public static LongLongPair of(String string)
 	{
-		String[] values = string.split("🤠");
+		final String[] values = string.split("🤠");
 		return new LongLongPair(Long.parseLong(values[0]), Long.parseLong(values[1]));
 	}
 
@@ -78,6 +78,6 @@ public class LongLongPair implements WritableComparable<LongLongPair>
 	public int compareTo(LongLongPair o)
 	{
 		final int valueCompare = Long.compare(value, o.value);
-		return valueCompare == 0 ? Long.compare(key, o.key) : valueCompare;
+		return valueCompare != 0 ? valueCompare : Long.compare(key, o.key);
 	}
 }
