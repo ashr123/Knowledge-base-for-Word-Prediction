@@ -4,6 +4,7 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.ec2.model.InstanceType;
 import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClientBuilder;
 import com.amazonaws.services.elasticmapreduce.model.*;
 import com.amazonaws.services.elasticmapreduce.util.StepFactory;
@@ -15,20 +16,21 @@ public class Main
 		try
 		{
 			// create an EMR client using the credentials and region specified in order to create the cluster
-			System.out.println("The cluster ID is " + AmazonElasticMapReduceClientBuilder.standard()
+			System.out.println("Cluster created with ID: " + AmazonElasticMapReduceClientBuilder.standard()
 					.withCredentials(new AWSStaticCredentialsProvider(new ProfileCredentialsProvider("default").getCredentials()))
 					.withRegion(Regions.US_EAST_1)
 					.build()
 					// create the cluster
 					.runJobFlow(new RunJobFlowRequest()
-							.withName("MyClusterCreatedFromJava")
+							.withName("Knowledge base for Word Predictor")
 							.withReleaseLabel("emr-6.2.0") // specifies the EMR release version label, we recommend the latest release
 							// create a step to enable debugging in the AWS Management Console
 							.withSteps(
 									new StepConfig("Enable debugging", new StepFactory().newEnableDebuggingStep())
-											.withActionOnFailure("TERMINATE_CLUSTER"),
+											.withActionOnFailure(ActionOnFailure.TERMINATE_CLUSTER.toString()),
 									new StepConfig("EMR", new HadoopJarStepConfig("s3://path/to/EMR.jar") // TODO
 											.withArgs(args))
+											.withActionOnFailure(ActionOnFailure.TERMINATE_CLUSTER.toString())
 							)
 							.withLogUri("s3://path/to/my/emr/logs") // a URI in S3 for log files is required when debugging is enabled // TODO
 							.withServiceRole("EMR_DefaultRole") // replace the default with a custom IAM service role if one is used
@@ -38,10 +40,10 @@ public class Main
 									.withEc2KeyName("RoysKey") // TODO maybe need to change
 									.withInstanceCount(3)
 									.withKeepJobFlowAliveWhenNoSteps(true)
-									.withMasterInstanceType("m5.xlarge")
-									.withSlaveInstanceType("m5.xlarge")
+									.withMasterInstanceType(InstanceType.M5Large.toString())
+									.withSlaveInstanceType(InstanceType.M5Large.toString())
 									.withKeepJobFlowAliveWhenNoSteps(false)
-									.withPlacement(new PlacementType("us-east-1a")))) // TODO check if needed
+									.withPlacement(new PlacementType(Regions.US_EAST_1.getName()/*"us-east-1a"*/)))) // TODO check if needed
 					.getJobFlowId());
 		}
 		catch (Exception e)
