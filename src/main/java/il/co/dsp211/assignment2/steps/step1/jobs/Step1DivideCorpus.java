@@ -11,6 +11,8 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -18,6 +20,8 @@ public class Step1DivideCorpus
 {
 	public static class Divider extends Mapper<LongWritable, Text, Text, BooleanLongPair>
 	{
+		private static Pattern HEBREW_PATTERN = Pattern.compile("(?<words>[א-ת]+\\ [א-ת]+\\ [א-ת]+)\\t\\d{4}\\t(?<occurrences>\\d+).*");
+
 		/**
 		 * @param key     ⟨line number,
 		 * @param value   ⟨⟨w₁, w₂, w₃⟩, year, occurrences in this year, pages in this year, books in this year⟩⟩
@@ -26,8 +30,10 @@ public class Step1DivideCorpus
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 		{
-			final String[] record = value.toString().split("\t"); // TODO check about regex
-			context.write(new Text(record[0]), new BooleanLongPair(key.get() % 2 == 0, Long.parseLong(record[2])));
+			Matcher matcher = HEBREW_PATTERN.matcher(value.toString());
+			if (matcher.matches()) {
+				context.write(new Text(matcher.group("words")), new BooleanLongPair(key.get() % 2 == 0, Long.parseLong(matcher.group("occurrences"))));
+			}
 		}
 	}
 

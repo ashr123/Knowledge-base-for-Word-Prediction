@@ -31,7 +31,7 @@ public class EMR
 		Job job1 = Job.getInstance(conf);
 		job1.setJarByClass(Step1DivideCorpus.class);
 
-		job1.setInputFormatClass(SequenceFileInputFormat.class);
+//		job1.setInputFormatClass(SequenceFileInputFormat.class);
 
 		job1.setMapperClass(Step1DivideCorpus.Divider.class);
 		job1.setMapOutputKeyClass(Text.class);
@@ -45,7 +45,7 @@ public class EMR
 
 		job1.setPartitionerClass(HashPartitioner.class);
 
-		FileInputFormat.addInputPath(job1, new Path("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"));
+		FileInputFormat.addInputPath(job1, new Path("/WordPred/Input"/*"s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"*/));
 		FileOutputFormat.setOutputPath(job1, new Path("/WordPred/Step1Output"));
 
 		System.out.println("Done building!\n" +
