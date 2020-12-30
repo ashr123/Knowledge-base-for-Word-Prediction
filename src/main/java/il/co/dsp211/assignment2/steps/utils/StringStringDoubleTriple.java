@@ -63,10 +63,10 @@ public class StringStringDoubleTriple implements WritableComparable<StringString
 	{
 		final int
 				string1Compare = string1.compareTo(o.string1),
-				string2Compare = string2.compareTo(o.string2);
+				string2Compare;
 
 		return string1Compare != 0 ? string1Compare :
-		       string2Compare != 0 ? string2Compare :
+		       (string2Compare = string2.compareTo(o.string2)) != 0 ? string2Compare :
 		       Double.compare(o.prob, prob);
 	}
 
