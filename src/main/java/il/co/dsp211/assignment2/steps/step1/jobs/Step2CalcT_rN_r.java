@@ -16,8 +16,8 @@ public class Step2CalcT_rN_r
 	{
 		/**
 		 * @param key     position in file
-		 * @param value   ⟨3-gram, ⟨first group's occurrences, second group's occurrences⟩⟩
-		 * @param context ⟨⟨group, occurrences⟩, occurrences in <b>other</b> group⟩
+		 * @param value   ⟨⟨w₁, w₂, w₃⟩, ⟨r₀, r₁⟩⟩
+		 * @param context ⟨⟨group, r⟩, r in <b>other</b> group⟩
 		 */
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
