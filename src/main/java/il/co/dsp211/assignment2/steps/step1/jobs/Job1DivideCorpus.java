@@ -16,11 +16,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class Step1DivideCorpus
+public class Job1DivideCorpus
 {
-	public static class Divider extends Mapper<LongWritable, Text, Text, BooleanLongPair>
+	public static class DividerMapper extends Mapper<LongWritable, Text, Text, BooleanLongPair>
 	{
-		private static Pattern HEBREW_PATTERN = Pattern.compile("(?<words>[א-ת]+\\ [א-ת]+\\ [א-ת]+)\\t\\d{4}\\t(?<occurrences>\\d+).*");
+		private static final Pattern HEBREW_PATTERN = Pattern.compile("(?<words>[א-ת]+\\ [א-ת]+\\ [א-ת]+)\\t\\d{4}\\t(?<occurrences>\\d+).*");
 
 		/**
 		 * @param key     ⟨line number,
@@ -37,11 +37,11 @@ public class Step1DivideCorpus
 		}
 	}
 
-	public static class Count extends Reducer<Text, BooleanLongPair, Text, BooleanLongPair>
+	public static class CountCombiner extends Reducer<Text, BooleanLongPair, Text, BooleanLongPair>
 	{
 		/**
 		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
-		 * @param values  [⟨group, occurrences⟩]⟩
+		 * @param values  [⟨group, occurrences⟩]⟩ (1-2 pairs)
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨r₀, r₁⟩⟩
 		 */
 		@Override
@@ -56,7 +56,7 @@ public class Step1DivideCorpus
 		}
 	}
 
-	public static class CountAndZip extends Reducer<Text, BooleanLongPair, Text, LongLongPair>
+	public static class CountAndZipReducer extends Reducer<Text, BooleanLongPair, Text, LongLongPair>
 	{
 		private Counter counter;
 
@@ -68,7 +68,7 @@ public class Step1DivideCorpus
 
 		/**
 		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
-		 * @param values  [⟨group, occurrences⟩]⟩
+		 * @param values  [⟨group, occurrences⟩]⟩ (1-2 pairs)
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨r₀, r₁⟩⟩
 		 */
 		@Override

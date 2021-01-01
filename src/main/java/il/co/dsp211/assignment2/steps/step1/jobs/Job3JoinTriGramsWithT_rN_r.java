@@ -11,14 +11,11 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Objects;
 
-/**
- * ⟨⟨w₁, w₂, w₃⟩, ⟨r₀, r₁⟩⟩
- * ⟨⟨group, r⟩, ⟨T_r, N_r⟩⟩
- */
-public class Step2Half //TODO edit EMR
+public class Job3JoinTriGramsWithT_rN_r
 {
-	public static class MapperTriGram extends Mapper<LongWritable, Text, BooleanBooleanLongTriple, Text>
+	public static class TriGramMapper extends Mapper<LongWritable, Text, BooleanBooleanLongTriple, Text>
 	{
 		/**
 		 * @param key     position in file
@@ -37,12 +34,12 @@ public class Step2Half //TODO edit EMR
 		}
 	}
 
-	public static class MapperProb extends Mapper<LongWritable, Text, BooleanBooleanLongTriple, Text>
+	public static class T_rN_rMapper extends Mapper<LongWritable, Text, BooleanBooleanLongTriple, Text>
 	{
 		/**
 		 * @param key     position in file
 		 * @param value   ⟨⟨group, r⟩, ⟨T_r, N_r⟩⟩
-		 * @param context ⟨⟨{@code false}, group, r⟩, ⟨T_r, N_r⟩ (as {@link Text})⟩ (1-2 pairs at reducer)
+		 * @param context ⟨⟨{@code false}, group, r⟩, ⟨T_r, N_r⟩ (as {@link Text})⟩
 		 */
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
@@ -53,14 +50,13 @@ public class Step2Half //TODO edit EMR
 		}
 	}
 
-	public static class JoinerReducer extends Reducer<BooleanBooleanLongTriple, Text, Text, Text>
+	public static class JoinReducer extends Reducer<BooleanBooleanLongTriple, Text, Text, Text>
 	{
 		private Text currentT_rN_r;
 		private boolean currentIsGroup0;
 		private long currentR = 0;
 
 		/**
-		 *
 		 * @param key     ⟨⟨isTriGram, group, r⟩,
 		 * @param values  [⟨T_r, N_r⟩ (1 pair) | ...⟨w₁, w₂, w₃⟩]⟩
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨T_r, N_r⟩⟩
@@ -71,7 +67,7 @@ public class Step2Half //TODO edit EMR
 			if (key.isTriGram()) // value is [⟨w₁, w₂, w₃⟩]
 				for (final Text triGram : values)
 					context.write(triGram, currentT_rN_r);
-			else // value is [p] with 1 element
+			else // value is [⟨T_r, N_r⟩] with 1 pair, for each r and group suppose to happen before a record with TriGrams
 				if (key.isGroup0() != currentIsGroup0 || key.getR() != currentR)
 				{
 					currentR = key.getR();
@@ -84,10 +80,10 @@ public class Step2Half //TODO edit EMR
 		}
 	}
 
-	public static class JoinPartitioner extends Partitioner<BooleanLongPair, Text> // TODO check
+	public static class JoinPartitioner extends Partitioner<BooleanBooleanLongTriple, Text>
 	{
 		/**
-		 * Ensures that BooleanLongPair with same {@code r} are directed to the same reducer
+		 * Ensures that record with with same {@code r} and group are directed to the same reducer
 		 *
 		 * @param key           the key to be partitioned.
 		 * @param value         the entry value.
@@ -95,9 +91,9 @@ public class Step2Half //TODO edit EMR
 		 * @return the partition number for the <code>key</code>.
 		 */
 		@Override
-		public int getPartition(BooleanLongPair key, Text value, int numPartitions)
+		public int getPartition(BooleanBooleanLongTriple key, Text value, int numPartitions)
 		{
-			return (Long.hashCode(key.getValue()) & Integer.MAX_VALUE) % numPartitions;
+			return (Objects.hash(key.isGroup0(), key.getR()) & Integer.MAX_VALUE) % numPartitions;
 		}
 	}
 }

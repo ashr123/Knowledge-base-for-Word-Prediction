@@ -10,9 +10,9 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 import java.util.stream.StreamSupport;
 
-public class Step2CalcT_rN_r
+public class Job2CalcT_rN_r
 {
-	public static class CalcThings extends Mapper<LongWritable, Text, BooleanLongPair, LongWritable>
+	public static class SplitRsMapper extends Mapper<LongWritable, Text, BooleanLongPair, LongWritable>
 	{
 		/**
 		 * @param key     position in file
@@ -30,7 +30,6 @@ public class Step2CalcT_rN_r
 		}
 	}
 
-//	//TODO check if fine
 //	public static class Combiner extends Reducer<BooleanLongPair, LongWritable, BooleanLongPair, LongLongPair>
 //	{
 //		@Override
@@ -53,7 +52,7 @@ public class Step2CalcT_rN_r
 ////		}
 //	}
 
-	public static class T_rN_rReducer extends Reducer<BooleanLongPair, LongWritable, BooleanLongPair, LongLongPair>
+	public static class CalcT_rN_rReducer extends Reducer<BooleanLongPair, LongWritable, BooleanLongPair, LongLongPair>
 	{
 		/**
 		 * @param key     ⟨⟨group, r⟩,

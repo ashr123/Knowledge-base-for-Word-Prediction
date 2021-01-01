@@ -8,11 +8,10 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
-import java.util.Arrays;
 
-public class Step5Sort
+public class Job5Sort
 {
-	public static class Castling extends Mapper<LongWritable, Text, StringStringDoubleTriple, Text>
+	public static class CastlingMapper extends Mapper<LongWritable, Text, StringStringDoubleTriple, Text>
 	{
 		/**
 		 * @param key     position in file
@@ -28,7 +27,7 @@ public class Step5Sort
 		}
 	}
 
-	public static class Finisher extends Reducer<StringStringDoubleTriple, Text, Text, DoubleWritable>
+	public static class FinisherReducer extends Reducer<StringStringDoubleTriple, Text, Text, DoubleWritable>
 	{
 		/**
 		 * @param key     ⟨⟨w₁, w₂, p⟩,
@@ -38,8 +37,8 @@ public class Step5Sort
 		@Override
 		protected void reduce(StringStringDoubleTriple key, Iterable<Text> values, Context context) throws IOException, InterruptedException
 		{
-			for (final Text text : values)
-				context.write(new Text(key.getString1() + " " + key.getString2() + " " + text.toString()), new DoubleWritable(key.getProb()));
+			for (final Text w3 : values)
+				context.write(new Text(key.getString1() + " " + key.getString2() + " " + w3.toString()), new DoubleWritable(key.getProb()));
 		}
 	}
 }

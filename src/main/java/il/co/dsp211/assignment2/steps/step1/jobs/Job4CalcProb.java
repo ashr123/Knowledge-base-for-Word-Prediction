@@ -11,24 +11,26 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 import java.util.stream.StreamSupport;
 
-public class Step3CalcProb
+public class Job4CalcProb
 {
-	public static class MapperImpl extends Mapper<LongWritable, Text, LongWritable, LongLongPair> //TODO identity function
+	public static class IdentityMapper extends Mapper<LongWritable, Text, Text, LongLongPair>
 	{
 		/**
+		 * Identity function
+		 *
 		 * @param key     position in file
-		 * @param value   ⟨⟨group, r⟩, ⟨T_r, N_r⟩⟩
-		 * @param context ⟨r, ⟨T_r, N_r⟩⟩
+		 * @param value   ⟨⟨w₁, w₂, w₃⟩, ⟨T_r, N_r⟩⟩
+		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨T_r, N_r⟩⟩
 		 */
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 		{
 			final String[] split = value.toString().split("\t");
-			context.write(new LongWritable(BooleanLongPair.of(split[0]).getValue()), LongLongPair.of(split[1]));
+			context.write(new Text(split[0]), LongLongPair.of(split[1]));
 		}
 	}
 
-	public static class CalcProbReducer extends Reducer<LongWritable, LongLongPair, LongWritable, DoubleWritable>
+	public static class CalcProbReducer extends Reducer<Text, LongLongPair, Text, DoubleWritable>
 	{
 		private long N;
 
@@ -44,7 +46,7 @@ public class Step3CalcProb
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, p⟩
 		 */
 		@Override
-		protected void reduce(LongWritable key, Iterable<LongLongPair> values, Context context) throws IOException, InterruptedException
+		protected void reduce(Text key, Iterable<LongLongPair> values, Context context) throws IOException, InterruptedException
 		{
 			final LongLongPair preP = StreamSupport.stream(values.spliterator(), false)
 					.reduce(new LongLongPair(0, 0),
