@@ -86,7 +86,7 @@ public class EMR
 
 		//--------------------------------------------------------------------------------------------------------------
 
-		System.out.println("Building job 4...");
+		System.out.println("Building job 3...");
 		Job job3 = Job.getInstance(conf);
 		job3.setJarByClass(Job3JoinTriGramsWithT_rN_r.class);
 
@@ -105,15 +105,15 @@ public class EMR
 
 		job3.setPartitionerClass(Job3JoinTriGramsWithT_rN_r.JoinPartitioner.class);
 
-		FileOutputFormat.setOutputPath(job3, new Path("s3://word-prediction/Step4Output"));
+		FileOutputFormat.setOutputPath(job3, new Path("s3://word-prediction/Step3Output"));
 
 		System.out.println("Done building!\n" +
-		                   "Starting job 4...");
-		System.out.println("Job 4 completed with success status: " + job3.waitForCompletion(true) + "!");
+		                   "Starting job 3...");
+		System.out.println("Job 3 completed with success status: " + job3.waitForCompletion(true) + "!");
 
 		//--------------------------------------------------------------------------------------------------------------
 
-		System.out.println("Building job 3...");
+		System.out.println("Building job 4...");
 		Job job4 = Job.getInstance(conf);
 		job4.setJarByClass(Job4CalcProb.class);
 
@@ -130,12 +130,12 @@ public class EMR
 
 		job4.setPartitionerClass(HashPartitioner.class);
 
-		FileInputFormat.addInputPath(job4, new Path("s3://word-prediction/Step2Output"));
-		FileOutputFormat.setOutputPath(job4, new Path("s3://word-prediction/Step3Output"));
+		FileInputFormat.addInputPath(job4, new Path("s3://word-prediction/Step3Output"));
+		FileOutputFormat.setOutputPath(job4, new Path("s3://word-prediction/Step4Output"));
 
 		System.out.println("Done building!\n" +
-		                   "Starting job 3...");
-		System.out.println("Job 3 completed with success status: " + job4.waitForCompletion(true) + "!");
+		                   "Starting job 4...");
+		System.out.println("Job 4 completed with success status: " + job4.waitForCompletion(true) + "!");
 
 		//--------------------------------------------------------------------------------------------------------------
 
