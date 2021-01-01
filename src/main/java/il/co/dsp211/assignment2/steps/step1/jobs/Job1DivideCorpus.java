@@ -20,7 +20,7 @@ public class Job1DivideCorpus
 {
 	public static class DividerMapper extends Mapper<LongWritable, Text, Text, BooleanLongPair>
 	{
-		private static final Pattern HEBREW_PATTERN = Pattern.compile("(?<words>[א-ת]+\\ [א-ת]+\\ [א-ת]+)\\t\\d{4}\\t(?<occurrences>\\d+).*");
+		private static final Pattern HEBREW_PATTERN = Pattern.compile("(?<words>[א-ת]+ [א-ת]+ [א-ת]+)\\t\\d{4}\\t(?<occurrences>\\d+).*");
 
 		/**
 		 * @param key     ⟨line number,
