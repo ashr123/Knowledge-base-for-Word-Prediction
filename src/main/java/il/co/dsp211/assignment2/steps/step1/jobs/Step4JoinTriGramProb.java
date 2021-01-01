@@ -12,7 +12,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class Step4JoinTriGramProb
+public class Step4JoinTriGramProb //TODO delete
 {
 	public static class MapperTriGram extends Mapper<LongWritable, Text, BooleanLongPair, Text>
 	{

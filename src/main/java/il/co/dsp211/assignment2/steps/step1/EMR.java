@@ -11,11 +11,10 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
-import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileAsBinaryOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;
 
 import java.io.IOException;
@@ -32,6 +31,7 @@ public class EMR
 		job1.setJarByClass(Step1DivideCorpus.class);
 
 		job1.setInputFormatClass(SequenceFileInputFormat.class);
+//		job1.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
 
 		job1.setMapperClass(Step1DivideCorpus.Divider.class);
 		job1.setMapOutputKeyClass(Text.class);
@@ -62,6 +62,9 @@ public class EMR
 		Job job2 = Job.getInstance(conf); // TODO check purpose
 		job2.setJarByClass(Step2CalcT_rN_r.class); // TODO check purpose
 
+//		job2.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
+//		job2.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
+
 		job2.setMapperClass(Step2CalcT_rN_r.CalcThings.class);
 		job2.setMapOutputKeyClass(BooleanLongPair.class);
 		job2.setMapOutputValueClass(LongWritable.class);
@@ -84,6 +87,9 @@ public class EMR
 		System.out.println("Building job 3...");
 		Job job3 = Job.getInstance(conf); // TODO check purpose
 		job3.setJarByClass(Step3CalcProb.class); // TODO check purpose
+
+//		job3.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
+//		job3.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
 
 		job3.setMapperClass(Step3CalcProb.MapperImpl.class);
 		job3.setMapOutputKeyClass(LongWritable.class);
@@ -108,6 +114,9 @@ public class EMR
 		Job job4 = Job.getInstance(conf); // TODO check purpose
 		job4.setJarByClass(Step4JoinTriGramProb.class); // TODO check purpose
 
+//		job4.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
+//		job4.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
+
 		MultipleInputs.addInputPath(job4, new Path("s3://word-prediction/Step1Output"), TextInputFormat.class, Step4JoinTriGramProb.MapperTriGram.class);
 		MultipleInputs.addInputPath(job4, new Path("s3://word-prediction/Step3Output"), TextInputFormat.class, Step4JoinTriGramProb.MapperProb.class);
 
@@ -131,6 +140,9 @@ public class EMR
 		System.out.println("Building job 5...");
 		Job job5 = Job.getInstance(conf); // TODO check purpose
 		job5.setJarByClass(Step5Sort.class); // TODO check purpose
+
+//		job5.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
+		job5.setOutputFormatClass(TextOutputFormat.class);
 
 		job5.setMapperClass(Step5Sort.Castling.class);
 		job5.setMapOutputKeyClass(StringStringDoubleTriple.class);

@@ -13,7 +13,7 @@ import java.util.stream.StreamSupport;
 
 public class Step3CalcProb
 {
-	public static class MapperImpl extends Mapper<LongWritable, Text, LongWritable, LongLongPair>
+	public static class MapperImpl extends Mapper<LongWritable, Text, LongWritable, LongLongPair> //TODO identity function
 	{
 		/**
 		 * @param key     position in file
@@ -39,9 +39,9 @@ public class Step3CalcProb
 		}
 
 		/**
-		 * @param key     ⟨r,
-		 * @param values  [⟨T_r, N_r⟩]⟩
-		 * @param context ⟨r, p⟩
+		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
+		 * @param values  [⟨T_r, N_r⟩]⟩ (1-2 pairs)
+		 * @param context ⟨⟨w₁, w₂, w₃⟩, p⟩
 		 */
 		@Override
 		protected void reduce(LongWritable key, Iterable<LongLongPair> values, Context context) throws IOException, InterruptedException
