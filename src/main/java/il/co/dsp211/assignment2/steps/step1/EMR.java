@@ -161,6 +161,7 @@ public class EMR
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 5...");
-		System.out.println("Job 5 completed with success status: " + job5.waitForCompletion(true) + "!\nExiting...");
+		System.out.println("Job 5 completed with success status: " + job5.waitForCompletion(true) + "!\n" +
+		                   "Exiting...");
 	}
 }
