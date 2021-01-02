@@ -75,7 +75,7 @@ public class Job3JoinTriGramsWithT_rN_r
 
 					final Iterator<Text> iterator = values.iterator();
 					if (iterator.hasNext())
-						currentT_rN_r = iterator.next();
+						currentT_rN_r = new Text(iterator.next());
 					else // doesn't suppose to happen happen
 						System.err.println("No ⟨T_r, N_r⟩ for group " + (key.isGroup0() ? 0 : 1) + " and r " + key.getR());
 				}

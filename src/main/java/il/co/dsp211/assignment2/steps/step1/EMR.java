@@ -116,11 +116,11 @@ public class EMR
 //		job4.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
 
 		job4.setMapperClass(Job4CalcProb.IdentityMapper.class);
-		job4.setMapOutputKeyClass(LongWritable.class);
+		job4.setMapOutputKeyClass(Text.class);
 		job4.setMapOutputValueClass(LongLongPair.class);
 
 		job4.setReducerClass(Job4CalcProb.CalcProbReducer.class);
-		job4.setOutputKeyClass(LongWritable.class);
+		job4.setOutputKeyClass(Text.class);
 		job4.setOutputValueClass(DoubleWritable.class);
 
 		job4.setPartitionerClass(HashPartitioner.class);
