@@ -29,10 +29,6 @@ public class EMR
 		Job job1 = Job.getInstance(conf);
 		job1.setJarByClass(Job1DivideCorpus.class);
 
-//		job1.setInputFormatClass(SequenceFileInputFormat.class); //TODO: COMMENTED FOR LOCAL
-
-//		job1.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
-
 		job1.setMapperClass(Job1DivideCorpus.DividerMapper.class);
 		job1.setMapOutputKeyClass(Text.class);
 		job1.setMapOutputValueClass(BooleanLongPair.class);
@@ -44,10 +40,6 @@ public class EMR
 		job1.setOutputValueClass(LongLongPair.class);
 
 		job1.setPartitionerClass(HashPartitioner.class);
-
-		//TODO: COMMENTED FOR LOCAL
-//		FileInputFormat.addInputPath(job1, new Path("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"));
-//		FileOutputFormat.setOutputPath(job1, new Path("s3://word-prediction/Step1Output"));
 
 		FileInputFormat.addInputPath(job1, new Path("/word-prediction/Input"));
 		FileOutputFormat.setOutputPath(job1, new Path("/word-prediction/Step1Output"));
@@ -66,9 +58,6 @@ public class EMR
 		Job job2 = Job.getInstance(conf);
 		job2.setJarByClass(Job2CalcT_rN_r.class);
 
-//		job2.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
-//		job2.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
-
 		job2.setMapperClass(Job2CalcT_rN_r.SplitRsMapper.class);
 		job2.setMapOutputKeyClass(BooleanLongPair.class);
 		job2.setMapOutputValueClass(LongWritable.class);
@@ -78,10 +67,6 @@ public class EMR
 		job2.setOutputValueClass(LongLongPair.class);
 
 		job2.setPartitionerClass(HashPartitioner.class);
-
-		//TODO: COMMENTED FOR LOCAL
-//		FileInputFormat.addInputPath(job2, new Path("s3://word-prediction/Step1Output"));
-//		FileOutputFormat.setOutputPath(job2, new Path("s3://word-prediction/Step2Output"));
 
 		FileInputFormat.addInputPath(job2, new Path("/word-prediction/Step1Output"));
 		FileOutputFormat.setOutputPath(job2, new Path("/word-prediction/Step2Output"));
@@ -96,10 +81,6 @@ public class EMR
 		Job job3 = Job.getInstance(conf);
 		job3.setJarByClass(Job3JoinTriGramsWithT_rN_r.class);
 
-		//TODO: COMMENTED FOR LOCAL
-//		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step1Output"), TextInputFormat.class/*SequenceFileAsBinaryInputFormat.class*/, Job3JoinTriGramsWithT_rN_r.TriGramMapper.class);
-//		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step2Output"), TextInputFormat.class/*SequenceFileAsBinaryInputFormat.class*/, Job3JoinTriGramsWithT_rN_r.T_rN_rMapper.class);
-
 		MultipleInputs.addInputPath(job3, new Path("/word-prediction/Step1Output"), TextInputFormat.class/*SequenceFileAsBinaryInputFormat.class*/, Job3JoinTriGramsWithT_rN_r.TriGramMapper.class);
 		MultipleInputs.addInputPath(job3, new Path("/word-prediction/Step2Output"), TextInputFormat.class/*SequenceFileAsBinaryInputFormat.class*/, Job3JoinTriGramsWithT_rN_r.T_rN_rMapper.class);
 
@@ -112,11 +93,7 @@ public class EMR
 
 		job3.setPartitionerClass(Job3JoinTriGramsWithT_rN_r.JoinPartitioner.class);
 
-		//TODO: COMMENTED FOR LOCAL
-//		FileOutputFormat.setOutputPath(job3, new Path("s3://word-prediction/Step3Output"));
 		FileOutputFormat.setOutputPath(job3, new Path("/word-prediction/Step3Output"));
-
-//		job3.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 3...");
@@ -128,9 +105,6 @@ public class EMR
 		Job job4 = Job.getInstance(conf);
 		job4.setJarByClass(Job4CalcProb.class);
 
-//		job4.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
-//		job4.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
-
 		job4.setMapperClass(Job4CalcProb.IdentityMapper.class);
 		job4.setMapOutputKeyClass(Text.class);
 		job4.setMapOutputValueClass(LongLongPair.class);
@@ -140,10 +114,6 @@ public class EMR
 		job4.setOutputValueClass(DoubleWritable.class);
 
 		job4.setPartitionerClass(HashPartitioner.class);
-
-		//TODO: COMMENTED FOR LOCAL
-//		FileInputFormat.addInputPath(job4, new Path("s3://word-prediction/Step3Output"));
-//		FileOutputFormat.setOutputPath(job4, new Path("s3://word-prediction/Step4Output"));
 
 		FileInputFormat.addInputPath(job4, new Path("/word-prediction/Step3Output"));
 		FileOutputFormat.setOutputPath(job4, new Path("/word-prediction/Step4Output"));
@@ -158,7 +128,6 @@ public class EMR
 		Job job5 = Job.getInstance(conf);
 		job5.setJarByClass(Job5Sort.class);
 
-//		job5.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
 		job5.setOutputFormatClass(TextOutputFormat.class);
 
 		job5.setMapperClass(Job5Sort.CastlingMapper.class);
@@ -169,11 +138,7 @@ public class EMR
 		job5.setOutputKeyClass(Text.class);
 		job5.setOutputValueClass(DoubleWritable.class);
 
-		job5.setPartitionerClass(HashPartitioner.class); // TODO Think about it
-
-		//TODO: COMMENTED FOR LOCAL
-//		FileInputFormat.addInputPath(job5, new Path("s3://word-prediction/Step4Output"));
-//		FileOutputFormat.setOutputPath(job5, new Path("s3://word-prediction/FinalOutput"));
+		job5.setPartitionerClass(HashPartitioner.class); // TODO: Think about it
 
 		FileInputFormat.addInputPath(job5, new Path("/word-prediction/Step4Output"));
 		FileOutputFormat.setOutputPath(job5, new Path("/word-prediction/FinalOutput"));
