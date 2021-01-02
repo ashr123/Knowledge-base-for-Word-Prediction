@@ -1,10 +1,7 @@
 package il.co.dsp211.assignment2.steps.step1;
 
 import il.co.dsp211.assignment2.steps.step1.jobs.*;
-import il.co.dsp211.assignment2.steps.utils.BooleanLongPair;
-import il.co.dsp211.assignment2.steps.utils.LongLongPair;
-import il.co.dsp211.assignment2.steps.utils.NCounter;
-import il.co.dsp211.assignment2.steps.utils.StringStringDoubleTriple;
+import il.co.dsp211.assignment2.steps.utils.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
@@ -90,18 +87,16 @@ public class EMR
 		Job job3 = Job.getInstance(conf);
 		job3.setJarByClass(Job3JoinTriGramsWithT_rN_r.class);
 
-//		job3.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
+		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step1Output"), TextInputFormat.class/*SequenceFileAsBinaryInputFormat.class*/, Job3JoinTriGramsWithT_rN_r.TriGramMapper.class);
+		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step2Output"), TextInputFormat.class/*SequenceFileAsBinaryInputFormat.class*/, Job3JoinTriGramsWithT_rN_r.T_rN_rMapper.class);
 //		job3.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
 
-		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step1Output"), TextInputFormat.class, Job3JoinTriGramsWithT_rN_r.TriGramMapper.class);
-		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step2Output"), TextInputFormat.class, Job3JoinTriGramsWithT_rN_r.T_rN_rMapper.class);
-
-		job3.setMapOutputKeyClass(BooleanLongPair.class);
+		job3.setMapOutputKeyClass(BooleanBooleanLongTriple.class);
 		job3.setMapOutputValueClass(Text.class);
 
 		job3.setReducerClass(Job3JoinTriGramsWithT_rN_r.JoinReducer.class);
 		job3.setOutputKeyClass(Text.class);
-		job3.setOutputValueClass(DoubleWritable.class);
+		job3.setOutputValueClass(Text.class);
 
 		job3.setPartitionerClass(Job3JoinTriGramsWithT_rN_r.JoinPartitioner.class);
 
