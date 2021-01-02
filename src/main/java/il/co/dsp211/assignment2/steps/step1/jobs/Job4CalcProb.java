@@ -2,7 +2,6 @@ package il.co.dsp211.assignment2.steps.step1.jobs;
 
 import il.co.dsp211.assignment2.steps.utils.LongLongPair;
 import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -12,20 +11,19 @@ import java.util.stream.StreamSupport;
 
 public class Job4CalcProb
 {
-	public static class IdentityMapper extends Mapper<LongWritable, Text, Text, LongLongPair>
+	public static class IdentityMapper extends Mapper<Text, LongLongPair, Text, LongLongPair>
 	{
 		/**
 		 * Identity function
 		 *
-		 * @param key     position in file
-		 * @param value   ⟨⟨w₁, w₂, w₃⟩, ⟨T_r, N_r⟩⟩
+		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
+		 * @param value   ⟨T_r, N_r⟩⟩
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨T_r, N_r⟩⟩
 		 */
 		@Override
-		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
+		protected void map(Text key, LongLongPair value, Context context) throws IOException, InterruptedException
 		{
-			final String[] split = value.toString().split("\t");
-			context.write(new Text(split[0]), LongLongPair.of(split[1]));
+			context.write(key, value);
 		}
 	}
 

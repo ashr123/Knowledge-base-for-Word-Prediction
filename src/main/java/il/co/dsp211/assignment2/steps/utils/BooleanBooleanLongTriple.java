@@ -1,6 +1,5 @@
 package il.co.dsp211.assignment2.steps.utils;
 
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;
@@ -22,6 +21,12 @@ public class BooleanBooleanLongTriple implements WritableComparable<BooleanBoole
 		this.isTriGram = isTriGram;
 		this.isGroup0 = isGroup0;
 		this.r = r;
+	}
+
+	public static BooleanBooleanLongTriple of(String string)
+	{
+		final String[] values = string.split("🤠");
+		return new BooleanBooleanLongTriple(Boolean.parseBoolean(values[0]), Boolean.parseBoolean(values[1]), Long.parseLong(values[2]));
 	}
 
 	public boolean isTriGram()

@@ -11,10 +11,9 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
-import org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;
 
 import java.io.IOException;
 
@@ -30,7 +29,7 @@ public class EMR
 		job1.setJarByClass(Job1DivideCorpus.class);
 
 		job1.setInputFormatClass(SequenceFileInputFormat.class);
-//		job1.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
+		job1.setOutputFormatClass(SequenceFileOutputFormat.class);
 
 		job1.setMapperClass(Job1DivideCorpus.DividerMapper.class);
 		job1.setMapOutputKeyClass(Text.class);
@@ -41,8 +40,6 @@ public class EMR
 		job1.setReducerClass(Job1DivideCorpus.CountAndZipReducer.class);
 		job1.setOutputKeyClass(Text.class);
 		job1.setOutputValueClass(LongLongPair.class);
-
-		job1.setPartitionerClass(HashPartitioner.class);
 
 		FileInputFormat.addInputPath(job1, new Path("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"));
 		FileOutputFormat.setOutputPath(job1, new Path("s3://word-prediction/Step1Output"));
@@ -61,8 +58,8 @@ public class EMR
 		Job job2 = Job.getInstance(conf);
 		job2.setJarByClass(Job2CalcT_rN_r.class);
 
-//		job2.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
-//		job2.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
+		job2.setInputFormatClass(SequenceFileInputFormat.class);
+		job2.setOutputFormatClass(SequenceFileOutputFormat.class);
 
 		job2.setMapperClass(Job2CalcT_rN_r.SplitRsMapper.class);
 		job2.setMapOutputKeyClass(BooleanLongPair.class);
@@ -71,8 +68,6 @@ public class EMR
 		job2.setReducerClass(Job2CalcT_rN_r.CalcT_rN_rReducer.class);
 		job2.setOutputKeyClass(BooleanLongPair.class);
 		job2.setOutputValueClass(LongLongPair.class);
-
-		job2.setPartitionerClass(HashPartitioner.class);
 
 		FileInputFormat.addInputPath(job2, new Path("s3://word-prediction/Step1Output"));
 		FileOutputFormat.setOutputPath(job2, new Path("s3://word-prediction/Step2Output"));
@@ -87,16 +82,16 @@ public class EMR
 		Job job3 = Job.getInstance(conf);
 		job3.setJarByClass(Job3JoinTriGramsWithT_rN_r.class);
 
-		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step1Output"), TextInputFormat.class/*SequenceFileAsBinaryInputFormat.class*/, Job3JoinTriGramsWithT_rN_r.TriGramMapper.class);
-		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step2Output"), TextInputFormat.class/*SequenceFileAsBinaryInputFormat.class*/, Job3JoinTriGramsWithT_rN_r.T_rN_rMapper.class);
-//		job3.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
+		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step1Output"), SequenceFileInputFormat.class, Job3JoinTriGramsWithT_rN_r.TriGramMapper.class);
+		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step2Output"), SequenceFileInputFormat.class, Job3JoinTriGramsWithT_rN_r.T_rN_rMapper.class);
+		job3.setOutputFormatClass(SequenceFileOutputFormat.class);
 
 		job3.setMapOutputKeyClass(BooleanBooleanLongTriple.class);
 		job3.setMapOutputValueClass(Text.class);
 
 		job3.setReducerClass(Job3JoinTriGramsWithT_rN_r.JoinReducer.class);
 		job3.setOutputKeyClass(Text.class);
-		job3.setOutputValueClass(Text.class);
+		job3.setOutputValueClass(LongLongPair.class);
 
 		job3.setPartitionerClass(Job3JoinTriGramsWithT_rN_r.JoinPartitioner.class);
 
@@ -112,8 +107,8 @@ public class EMR
 		Job job4 = Job.getInstance(conf);
 		job4.setJarByClass(Job4CalcProb.class);
 
-//		job4.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
-//		job4.setOutputFormatClass(SequenceFileAsBinaryOutputFormat.class);
+		job4.setInputFormatClass(SequenceFileInputFormat.class);
+		job4.setOutputFormatClass(SequenceFileOutputFormat.class);
 
 		job4.setMapperClass(Job4CalcProb.IdentityMapper.class);
 		job4.setMapOutputKeyClass(Text.class);
@@ -122,8 +117,6 @@ public class EMR
 		job4.setReducerClass(Job4CalcProb.CalcProbReducer.class);
 		job4.setOutputKeyClass(Text.class);
 		job4.setOutputValueClass(DoubleWritable.class);
-
-		job4.setPartitionerClass(HashPartitioner.class);
 
 		FileInputFormat.addInputPath(job4, new Path("s3://word-prediction/Step3Output"));
 		FileOutputFormat.setOutputPath(job4, new Path("s3://word-prediction/Step4Output"));
@@ -138,7 +131,7 @@ public class EMR
 		Job job5 = Job.getInstance(conf);
 		job5.setJarByClass(Job5Sort.class);
 
-//		job5.setInputFormatClass(SequenceFileAsBinaryInputFormat.class);
+		job5.setInputFormatClass(SequenceFileInputFormat.class);
 		job5.setOutputFormatClass(TextOutputFormat.class);
 
 		job5.setMapperClass(Job5Sort.CastlingMapper.class);
@@ -149,7 +142,7 @@ public class EMR
 		job5.setOutputKeyClass(Text.class);
 		job5.setOutputValueClass(DoubleWritable.class);
 
-		job5.setPartitionerClass(Job5Sort.SameReducerPartitioner.class); // TODO Think about it
+		job5.setNumReduceTasks(1);
 
 		FileInputFormat.addInputPath(job5, new Path("s3://word-prediction/Step4Output"));
 		FileOutputFormat.setOutputPath(job5, new Path("s3://word-prediction/FinalOutput"));

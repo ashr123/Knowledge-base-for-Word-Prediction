@@ -30,7 +30,7 @@ public class Job1DivideCorpus
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 		{
-			Matcher matcher = HEBREW_PATTERN.matcher(value.toString());
+			final Matcher matcher = HEBREW_PATTERN.matcher(value.toString());
 			if (matcher.matches()) {
 				context.write(new Text(matcher.group("words")), new BooleanLongPair(key.get() % 2 == 0, Long.parseLong(matcher.group("occurrences"))));
 			}

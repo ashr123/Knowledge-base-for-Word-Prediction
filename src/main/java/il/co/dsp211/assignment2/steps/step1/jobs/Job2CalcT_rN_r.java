@@ -12,21 +12,20 @@ import java.util.stream.StreamSupport;
 
 public class Job2CalcT_rN_r
 {
-	public static class SplitRsMapper extends Mapper<LongWritable, Text, BooleanLongPair, LongWritable>
+	public static class SplitRsMapper extends Mapper<Text, LongLongPair, BooleanLongPair, LongWritable>
 	{
 		/**
-		 * @param key     position in file
-		 * @param value   ⟨⟨w₁, w₂, w₃⟩, ⟨r₀, r₁⟩⟩
+		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
+		 * @param value   ⟨r₀, r₁⟩⟩
 		 * @param context ⟨⟨group, r⟩, r in <b>other</b> group⟩
 		 */
 		@Override
-		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
+		protected void map(Text key, LongLongPair value, Context context) throws IOException, InterruptedException
 		{
-			final LongLongPair value1 = LongLongPair.of(value.toString().split("\t")[1]);
-			if (value1.getKey() != 0)
-				context.write(new BooleanLongPair(true, value1.getKey()), new LongWritable(value1.getValue()));
-			if (value1.getValue() != 0)
-				context.write(new BooleanLongPair(false, value1.getValue()), new LongWritable(value1.getKey()));
+			if (value.getKey() != 0)
+				context.write(new BooleanLongPair(true, value.getKey()), new LongWritable(value.getValue()));
+			if (value.getValue() != 0)
+				context.write(new BooleanLongPair(false, value.getValue()), new LongWritable(value.getKey()));
 		}
 	}
 

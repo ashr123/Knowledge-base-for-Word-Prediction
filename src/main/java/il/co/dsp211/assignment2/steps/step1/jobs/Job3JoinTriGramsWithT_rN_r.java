@@ -3,7 +3,6 @@ package il.co.dsp211.assignment2.steps.step1.jobs;
 import il.co.dsp211.assignment2.steps.utils.BooleanBooleanLongTriple;
 import il.co.dsp211.assignment2.steps.utils.BooleanLongPair;
 import il.co.dsp211.assignment2.steps.utils.LongLongPair;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Partitioner;
@@ -15,50 +14,46 @@ import java.util.Objects;
 
 public class Job3JoinTriGramsWithT_rN_r
 {
-	public static class TriGramMapper extends Mapper<LongWritable, Text, BooleanBooleanLongTriple, Text>
+	public static class TriGramMapper extends Mapper<Text, LongLongPair, BooleanBooleanLongTriple, Text>
 	{
 		/**
-		 * @param key     position in file
-		 * @param value   ⟨⟨w₁, w₂, w₃⟩, ⟨r₀, r₁⟩⟩
+		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
+		 * @param value   ⟨r₀, r₁⟩⟩
 		 * @param context ⟨⟨{@code true}, {@code true}, r₀⟩, ⟨w₁, w₂, w₃⟩⟩, ⟨⟨{@code true}, {@code false}, r₁⟩, ⟨w₁, w₂, w₃⟩⟩
 		 */
 		@Override
-		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
+		protected void map(Text key, LongLongPair value, Context context) throws IOException, InterruptedException
 		{
-			final String[] split = value.toString().split("\t");
-			final LongLongPair value1 = LongLongPair.of(split[1]);
-			if (value1.getKey() != 0)
-				context.write(new BooleanBooleanLongTriple(true, true, value1.getKey()), new Text(split[0]));
-			if (value1.getValue() != 0)
-				context.write(new BooleanBooleanLongTriple(true, false, value1.getValue()), new Text(split[0]));
+			if (value.getKey() != 0)
+				context.write(new BooleanBooleanLongTriple(true, true, value.getKey()), new Text(key));
+			if (value.getValue() != 0)
+				context.write(new BooleanBooleanLongTriple(true, false, value.getValue()), new Text(key));
 		}
 	}
 
-	public static class T_rN_rMapper extends Mapper<LongWritable, Text, BooleanBooleanLongTriple, Text>
+	public static class T_rN_rMapper extends Mapper<BooleanLongPair, LongLongPair, BooleanBooleanLongTriple, Text>
 	{
 		/**
-		 * @param key     position in file
-		 * @param value   ⟨⟨group, r⟩, ⟨T_r, N_r⟩⟩
+		 * @param key     ⟨⟨group, r⟩,
+		 * @param value   ⟨T_r, N_r⟩⟩
 		 * @param context ⟨⟨{@code false}, group, r⟩, ⟨T_r, N_r⟩ (as {@link Text})⟩
 		 */
 		@Override
-		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
+		protected void map(BooleanLongPair key, LongLongPair value, Context context) throws IOException, InterruptedException
 		{
-			final String[] split = value.toString().split("\t");
-			final BooleanLongPair key1 = BooleanLongPair.of(split[0]);
-			context.write(new BooleanBooleanLongTriple(false, key1.isKey(), key1.getValue()), new Text(split[1]));
+			context.write(new BooleanBooleanLongTriple(false, key.isKey(), key.getValue()), new Text(value.toString()));
 		}
 	}
 
-	public static class JoinReducer extends Reducer<BooleanBooleanLongTriple, Text, Text, Text>
+	public static class JoinReducer extends Reducer<BooleanBooleanLongTriple, Text, Text, LongLongPair>
 	{
-		private Text currentT_rN_r;
+		private LongLongPair currentT_rN_r;
 		private boolean currentIsGroup0;
 		private long currentR = 0;
 
 		/**
 		 * @param key     ⟨⟨isTriGram, group, r⟩,
-		 * @param values  [⟨T_r, N_r⟩ (1 pair) | ...⟨w₁, w₂, w₃⟩]⟩
+		 * @param values  [⟨T_r, N_r⟩ (1 pair as {@link Text}) | ...⟨w₁, w₂, w₃⟩]⟩
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨T_r, N_r⟩⟩
 		 */
 		@Override
@@ -75,7 +70,7 @@ public class Job3JoinTriGramsWithT_rN_r
 
 					final Iterator<Text> iterator = values.iterator();
 					if (iterator.hasNext())
-						currentT_rN_r = new Text(iterator.next());
+						currentT_rN_r = LongLongPair.of(iterator.next().toString());
 					else // doesn't suppose to happen happen
 						System.err.println("No ⟨T_r, N_r⟩ for group " + (key.isGroup0() ? 0 : 1) + " and r " + key.getR());
 				}
