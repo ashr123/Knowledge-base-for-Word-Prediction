@@ -40,7 +40,7 @@ public class Job1DivideCorpus
 	{
 		/**
 		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
-		 * @param values  [⟨group, occurrences⟩]⟩ (1-2 pairs)
+		 * @param values  [⟨group, occurrences⟩]⟩
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨r₀, r₁⟩⟩
 		 */
 		@Override
@@ -67,7 +67,7 @@ public class Job1DivideCorpus
 
 		/**
 		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
-		 * @param values  [⟨group, occurrences⟩]⟩ (1-2 pairs)
+		 * @param values  [⟨group, occurrences⟩]⟩
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨r₀, r₁⟩⟩
 		 */
 		@Override
