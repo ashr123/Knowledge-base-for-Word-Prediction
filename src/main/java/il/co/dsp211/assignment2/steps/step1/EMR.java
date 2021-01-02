@@ -1,10 +1,7 @@
 package il.co.dsp211.assignment2.steps.step1;
 
 import il.co.dsp211.assignment2.steps.step1.jobs.*;
-import il.co.dsp211.assignment2.steps.utils.BooleanLongPair;
-import il.co.dsp211.assignment2.steps.utils.LongLongPair;
-import il.co.dsp211.assignment2.steps.utils.NCounter;
-import il.co.dsp211.assignment2.steps.utils.StringStringDoubleTriple;
+import il.co.dsp211.assignment2.steps.utils.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
@@ -14,9 +11,9 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.IOException;
 
@@ -29,21 +26,20 @@ public class EMR
 		System.out.println("Building job 1...");
 
 		Job job1 = Job.getInstance(conf);
-		job1.setJarByClass(Step1DivideCorpus.class);
+		job1.setJarByClass(Job1DivideCorpus.class);
 
 		job1.setInputFormatClass(SequenceFileInputFormat.class);
+		job1.setOutputFormatClass(SequenceFileOutputFormat.class);
 
-		job1.setMapperClass(Step1DivideCorpus.Divider.class);
+		job1.setMapperClass(Job1DivideCorpus.DividerMapper.class);
 		job1.setMapOutputKeyClass(Text.class);
 		job1.setMapOutputValueClass(BooleanLongPair.class);
 
-		job1.setCombinerClass(Step1DivideCorpus.Count.class);
+		job1.setCombinerClass(Job1DivideCorpus.CountCombiner.class);
 
-		job1.setReducerClass(Step1DivideCorpus.CountAndZip.class);
+		job1.setReducerClass(Job1DivideCorpus.CountAndZipReducer.class);
 		job1.setOutputKeyClass(Text.class);
 		job1.setOutputValueClass(LongLongPair.class);
-
-		job1.setPartitionerClass(HashPartitioner.class);
 
 		FileInputFormat.addInputPath(job1, new Path("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"));
 		FileOutputFormat.setOutputPath(job1, new Path("s3://word-prediction/Step1Output"));
@@ -59,18 +55,19 @@ public class EMR
 		//--------------------------------------------------------------------------------------------------------------
 
 		System.out.println("Building job 2...");
-		Job job2 = Job.getInstance(conf); // TODO check purpose
-		job2.setJarByClass(Step2CalcT_rN_r.class); // TODO check purpose
+		Job job2 = Job.getInstance(conf);
+		job2.setJarByClass(Job2CalcT_rN_r.class);
 
-		job2.setMapperClass(Step2CalcT_rN_r.CalcThings.class);
+		job2.setInputFormatClass(SequenceFileInputFormat.class);
+		job2.setOutputFormatClass(SequenceFileOutputFormat.class);
+
+		job2.setMapperClass(Job2CalcT_rN_r.SplitRsMapper.class);
 		job2.setMapOutputKeyClass(BooleanLongPair.class);
 		job2.setMapOutputValueClass(LongWritable.class);
 
-		job2.setReducerClass(Step2CalcT_rN_r.T_rN_rReducer.class);
+		job2.setReducerClass(Job2CalcT_rN_r.CalcT_rN_rReducer.class);
 		job2.setOutputKeyClass(BooleanLongPair.class);
 		job2.setOutputValueClass(LongLongPair.class);
-
-		job2.setPartitionerClass(HashPartitioner.class);
 
 		FileInputFormat.addInputPath(job2, new Path("s3://word-prediction/Step1Output"));
 		FileOutputFormat.setOutputPath(job2, new Path("s3://word-prediction/Step2Output"));
@@ -82,20 +79,22 @@ public class EMR
 		//--------------------------------------------------------------------------------------------------------------
 
 		System.out.println("Building job 3...");
-		Job job3 = Job.getInstance(conf); // TODO check purpose
-		job3.setJarByClass(Step3CalcProb.class); // TODO check purpose
+		Job job3 = Job.getInstance(conf);
+		job3.setJarByClass(Job3JoinTriGramsWithT_rN_r.class);
 
-		job3.setMapperClass(Step3CalcProb.MapperImpl.class);
-		job3.setMapOutputKeyClass(LongWritable.class);
-		job3.setMapOutputValueClass(LongLongPair.class);
+		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step1Output"), SequenceFileInputFormat.class, Job3JoinTriGramsWithT_rN_r.TriGramMapper.class);
+		MultipleInputs.addInputPath(job3, new Path("s3://word-prediction/Step2Output"), SequenceFileInputFormat.class, Job3JoinTriGramsWithT_rN_r.T_rN_rMapper.class);
+		job3.setOutputFormatClass(SequenceFileOutputFormat.class);
 
-		job3.setReducerClass(Step3CalcProb.CalcProbReducer.class);
-		job3.setOutputKeyClass(LongWritable.class);
-		job3.setOutputValueClass(DoubleWritable.class);
+		job3.setMapOutputKeyClass(BooleanBooleanLongTriple.class);
+		job3.setMapOutputValueClass(Text.class);
 
-		job3.setPartitionerClass(HashPartitioner.class);
+		job3.setReducerClass(Job3JoinTriGramsWithT_rN_r.JoinReducer.class);
+		job3.setOutputKeyClass(Text.class);
+		job3.setOutputValueClass(LongLongPair.class);
 
-		FileInputFormat.addInputPath(job3, new Path("s3://word-prediction/Step2Output"));
+		job3.setPartitionerClass(Job3JoinTriGramsWithT_rN_r.JoinPartitioner.class);
+
 		FileOutputFormat.setOutputPath(job3, new Path("s3://word-prediction/Step3Output"));
 
 		System.out.println("Done building!\n" +
@@ -105,21 +104,21 @@ public class EMR
 		//--------------------------------------------------------------------------------------------------------------
 
 		System.out.println("Building job 4...");
-		Job job4 = Job.getInstance(conf); // TODO check purpose
-		job4.setJarByClass(Step4JoinTriGramProb.class); // TODO check purpose
+		Job job4 = Job.getInstance(conf);
+		job4.setJarByClass(Job4CalcProb.class);
 
-		MultipleInputs.addInputPath(job4, new Path("s3://word-prediction/Step1Output"), TextInputFormat.class, Step4JoinTriGramProb.MapperTriGram.class);
-		MultipleInputs.addInputPath(job4, new Path("s3://word-prediction/Step3Output"), TextInputFormat.class, Step4JoinTriGramProb.MapperProb.class);
+		job4.setInputFormatClass(SequenceFileInputFormat.class);
+		job4.setOutputFormatClass(SequenceFileOutputFormat.class);
 
-		job4.setMapOutputKeyClass(BooleanLongPair.class);
-		job4.setMapOutputValueClass(Text.class);
+		job4.setMapperClass(Job4CalcProb.IdentityMapper.class);
+		job4.setMapOutputKeyClass(Text.class);
+		job4.setMapOutputValueClass(LongLongPair.class);
 
-		job4.setReducerClass(Step4JoinTriGramProb.JoinerReducer.class);
+		job4.setReducerClass(Job4CalcProb.CalcProbReducer.class);
 		job4.setOutputKeyClass(Text.class);
 		job4.setOutputValueClass(DoubleWritable.class);
 
-		job4.setPartitionerClass(Step4JoinTriGramProb.JoinPartitioner.class);
-
+		FileInputFormat.addInputPath(job4, new Path("s3://word-prediction/Step3Output"));
 		FileOutputFormat.setOutputPath(job4, new Path("s3://word-prediction/Step4Output"));
 
 		System.out.println("Done building!\n" +
@@ -129,24 +128,28 @@ public class EMR
 		//--------------------------------------------------------------------------------------------------------------
 
 		System.out.println("Building job 5...");
-		Job job5 = Job.getInstance(conf); // TODO check purpose
-		job5.setJarByClass(Step5Sort.class); // TODO check purpose
+		Job job5 = Job.getInstance(conf);
+		job5.setJarByClass(Job5Sort.class);
 
-		job5.setMapperClass(Step5Sort.Castling.class);
+		job5.setInputFormatClass(SequenceFileInputFormat.class);
+		job5.setOutputFormatClass(TextOutputFormat.class);
+
+		job5.setMapperClass(Job5Sort.CastlingMapper.class);
 		job5.setMapOutputKeyClass(StringStringDoubleTriple.class);
 		job5.setMapOutputValueClass(Text.class);
 
-		job5.setReducerClass(Step5Sort.Finisher.class);
+		job5.setReducerClass(Job5Sort.FinisherReducer.class);
 		job5.setOutputKeyClass(Text.class);
 		job5.setOutputValueClass(DoubleWritable.class);
 
-		job5.setPartitionerClass(HashPartitioner.class); // TODO Think about it
+		job5.setNumReduceTasks(1);
 
 		FileInputFormat.addInputPath(job5, new Path("s3://word-prediction/Step4Output"));
 		FileOutputFormat.setOutputPath(job5, new Path("s3://word-prediction/FinalOutput"));
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 5...");
-		System.out.println("Job 5 completed with success status: " + job5.waitForCompletion(true) + "!\nExiting...");
+		System.out.println("Job 5 completed with success status: " + job5.waitForCompletion(true) + "!\n" +
+		                   "Exiting...");
 	}
 }
