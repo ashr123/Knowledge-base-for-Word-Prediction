@@ -149,7 +149,7 @@ public class EMR
 		job5.setOutputKeyClass(Text.class);
 		job5.setOutputValueClass(DoubleWritable.class);
 
-		job5.setPartitionerClass(HashPartitioner.class); // TODO Think about it
+		job5.setPartitionerClass(Job5Sort.SameReducerPartitioner.class); // TODO Think about it
 
 		FileInputFormat.addInputPath(job5, new Path("s3://word-prediction/Step4Output"));
 		FileOutputFormat.setOutputPath(job5, new Path("s3://word-prediction/FinalOutput"));

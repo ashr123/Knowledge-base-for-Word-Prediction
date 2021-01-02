@@ -5,6 +5,7 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
@@ -39,6 +40,23 @@ public class Job5Sort
 		{
 			for (final Text w3 : values)
 				context.write(new Text(key.getString1() + " " + key.getString2() + " " + w3.toString()), new DoubleWritable(key.getProb()));
+		}
+	}
+
+	public static class SameReducerPartitioner extends Partitioner<StringStringDoubleTriple, Text>
+	{
+		/**
+		 * Ensures that all records wil arrive to the same reducer
+		 *
+		 * @param key           the key to be partitioned.
+		 * @param value         the entry value.
+		 * @param numPartitions the total number of partitions.
+		 * @return the partition number for the <code>key</code>.
+		 */
+		@Override
+		public int getPartition(StringStringDoubleTriple key, Text value, int numPartitions)
+		{
+			return 0;
 		}
 	}
 }
