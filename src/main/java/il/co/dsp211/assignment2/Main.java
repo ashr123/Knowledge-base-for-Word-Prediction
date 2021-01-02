@@ -1,7 +1,5 @@
 package il.co.dsp211.assignment2;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.ec2.model.InstanceType;
 import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClientBuilder;
@@ -18,7 +16,6 @@ public class Main
 		System.out.println("Creating cluster...");
 		// create an EMR client using the credentials and region specified in order to create the cluster
 		System.out.println("Cluster created with ID: " + AmazonElasticMapReduceClientBuilder.standard()
-				.withCredentials(new AWSStaticCredentialsProvider(new ProfileCredentialsProvider(/*AwsProfileNameLoader.DEFAULT_PROFILE_NAME*/).getCredentials()))
 				.withRegion(Regions.US_EAST_1)
 				.build()
 				// create the cluster
@@ -37,12 +34,10 @@ public class Main
 						.withServiceRole("EMR_DefaultRole") // replace the default with a custom IAM service role if one is used
 						.withJobFlowRole("EMR_EC2_DefaultRole") // replace the default with a custom EMR role for the EC2 instance profile if one is used
 						.withInstances(new JobFlowInstancesConfig()
-								.withEc2KeyName("RoysKey")
 								.withInstanceCount(3)
-								.withKeepJobFlowAliveWhenNoSteps(true)
+								.withKeepJobFlowAliveWhenNoSteps(false)
 								.withMasterInstanceType(InstanceType.M5Xlarge.toString())
-								.withSlaveInstanceType(InstanceType.M5Xlarge.toString())
-								.withKeepJobFlowAliveWhenNoSteps(false)))
+								.withSlaveInstanceType(InstanceType.M5Xlarge.toString())))
 				.getJobFlowId());
 	}
 }
