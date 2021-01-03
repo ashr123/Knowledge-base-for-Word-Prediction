@@ -49,31 +49,34 @@ public class Job3JoinTriGramsWithT_rN_r
 	{
 		private LongLongPair currentT_rN_r;
 		private boolean currentIsGroup0;
-		private long currentR = 0;
+		private long currentR;
 
 		/**
 		 * @param key     ⟨⟨isTriGram, group, r⟩,
 		 * @param values  [⟨T_r, N_r⟩ (1 pair as {@link Text}) | ...⟨w₁, w₂, w₃⟩]⟩
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨T_r, N_r⟩⟩
+		 * @see BooleanBooleanLongTriple#compareTo(BooleanBooleanLongTriple)
 		 */
 		@Override
 		protected void reduce(BooleanBooleanLongTriple key, Iterable<Text> values, Context context) throws IOException, InterruptedException
 		{
-			if (key.isTriGram()) // value is [⟨w₁, w₂, w₃⟩]
-				for (final Text triGram : values)
-					context.write(triGram, currentT_rN_r);
-			else // value is [⟨T_r, N_r⟩] with 1 pair, for each r and group suppose to happen before a record with TriGrams
-				if (key.isGroup0() != currentIsGroup0 || key.getR() != currentR)
-				{
-					currentR = key.getR();
-					currentIsGroup0 = key.isGroup0();
-
-					final Iterator<Text> iterator = values.iterator();
-					if (iterator.hasNext())
-						currentT_rN_r = LongLongPair.of(iterator.next().toString());
-					else // doesn't suppose to happen happen
-						System.err.println("No ⟨T_r, N_r⟩ for group " + (key.isGroup0() ? 0 : 1) + " and r " + key.getR());
-				}
+			if (key.isTriGram()) // value is [...⟨w₁, w₂, w₃⟩]
+				if (currentIsGroup0 == key.isGroup0() && currentR == key.getR())
+					for (final Text triGram : values)
+						context.write(triGram, currentT_rN_r);
+				else
+					throw new IllegalStateException("Got TriGram-record with isGroup0: " + key.isGroup0() + " and r: " + key.getR() + ", but currently have isGroup0: " + currentIsGroup0 + " and r: " + currentR);
+			else // value is [⟨T_r, N_r⟩ (1 pair as Text)]
+			{
+				final Iterator<Text> iterator = values.iterator();
+				if (iterator.hasNext())
+					currentT_rN_r = LongLongPair.of(iterator.next().toString());
+				if (iterator.hasNext())
+					throw new IllegalStateException("Got more then 1 pair of ⟨T_r, N_r⟩");
+				
+				currentR = key.getR();
+				currentIsGroup0 = key.isGroup0();
+			}
 		}
 	}
 
