@@ -110,7 +110,6 @@ public class EMR
 		job4.setInputFormatClass(SequenceFileInputFormat.class);
 		job4.setOutputFormatClass(SequenceFileOutputFormat.class);
 
-		job4.setMapperClass(Job4CalcProb.IdentityMapper.class);
 		job4.setMapOutputKeyClass(Text.class);
 		job4.setMapOutputValueClass(LongLongPair.class);
 

@@ -3,7 +3,6 @@ package il.co.dsp211.assignment2.steps.step1.jobs;
 import il.co.dsp211.assignment2.steps.utils.LongLongPair;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
@@ -11,22 +10,6 @@ import java.util.stream.StreamSupport;
 
 public class Job4CalcProb
 {
-	public static class IdentityMapper extends Mapper<Text, LongLongPair, Text, LongLongPair>
-	{
-		/**
-		 * Identity function
-		 *
-		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
-		 * @param value   ⟨T_r, N_r⟩⟩
-		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨T_r, N_r⟩⟩
-		 */
-		@Override
-		protected void map(Text key, LongLongPair value, Context context) throws IOException, InterruptedException
-		{
-			context.write(key, value);
-		}
-	}
-
 	public static class CalcProbReducer extends Reducer<Text, LongLongPair, Text, DoubleWritable>
 	{
 		private long N;
