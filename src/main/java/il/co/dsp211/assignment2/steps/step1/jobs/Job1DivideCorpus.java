@@ -76,10 +76,10 @@ public class Job1DivideCorpus
 			final Map<Boolean, Long> map = StreamSupport.stream(values.spliterator(), false)
 					.collect(Collectors.groupingBy(BooleanLongPair::isKey, Collectors.summingLong(BooleanLongPair::getValue)));
 			context.write(key, new LongLongPair(map.containsKey(true) ? map.get(true) : 0, map.containsKey(false) ? map.get(false) : 0));
-			counter.increment(map.values().parallelStream()
+			counter.increment(map.values().stream()
 					.mapToLong(Long::longValue)
 					.sum());
-//			counter.increment(map.get(true) + map.get(false));
+//			counter.increment((map.containsKey(true) ? map.get(true) : 0) + (map.containsKey(false) ? map.get(false) : 0));
 		}
 	}
 }
