@@ -1,7 +1,6 @@
 upload.sh
 config.properties
-.run
-out
+.run/
 
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,intellij+all,java,maven
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,intellij+all,java,maven
