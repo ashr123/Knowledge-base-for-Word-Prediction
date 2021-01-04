@@ -11,7 +11,8 @@ We will generate a knowledge-base for Hebrew word-prediction system, based on Go
         - `TRUE` - if you want to run this cluster **with** combiners.
         - `FALSE` - if you want to run this cluster **without** combiners.
         - `BOTH` - if you want to run **both** options, in such case this programm will create 2 folders for the products of this program, one for each option.
-    3. `jarFileName` - the name of the jar you've created at step 2 **without extension**
+    3. `jarFileName` - the name of the jar you've created at step 2 **without extension**.
+    4. `instanceCount` - number of instances in the cluster.
 5. Run `il/co/dsp211/assignment2/Main.java`.
 6. The final output will be present in folder `FinalOutput`.
 
