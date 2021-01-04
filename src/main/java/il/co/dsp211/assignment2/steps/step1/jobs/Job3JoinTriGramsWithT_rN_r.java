@@ -73,7 +73,7 @@ public class Job3JoinTriGramsWithT_rN_r
 					currentT_rN_r = LongLongPair.of(iterator.next().toString());
 				if (iterator.hasNext())
 					throw new IllegalStateException("Got more then 1 pair of ⟨T_r, N_r⟩");
-				
+
 				currentR = key.getR();
 				currentIsGroup0 = key.isGroup0();
 			}
