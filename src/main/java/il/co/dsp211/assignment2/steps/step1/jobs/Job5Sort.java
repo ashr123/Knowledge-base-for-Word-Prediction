@@ -31,6 +31,7 @@ public class Job5Sort
 		 * @param key     ⟨⟨w₁, w₂, p⟩,
 		 * @param values  [w₃]⟩
 		 * @param context ⟨⟨w₁, w₂, w₃⟩, p⟩ sorted as requested
+		 * @see StringStringDoubleTriple#compareTo(StringStringDoubleTriple)
 		 */
 		@Override
 		protected void reduce(StringStringDoubleTriple key, Iterable<Text> values, Context context) throws IOException, InterruptedException

@@ -46,7 +46,8 @@ public class LongLongPair implements WritableComparable<LongLongPair>
 		if (!(o instanceof LongLongPair))
 			return false;
 		LongLongPair that = (LongLongPair) o;
-		return key == that.key && value == that.value;
+		return key == that.key &&
+		       value == that.value;
 	}
 
 	@Override

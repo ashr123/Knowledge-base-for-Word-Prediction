@@ -24,6 +24,12 @@ public class StringStringDoubleTriple implements WritableComparable<StringString
 		this.prob = prob;
 	}
 
+	public static StringStringDoubleTriple of(String string)
+	{
+		final String[] values = string.split("🤠");
+		return new StringStringDoubleTriple(values[0], values[1], Double.parseDouble(values[2]));
+	}
+
 	public String getString1()
 	{
 		return string1;
@@ -58,6 +64,16 @@ public class StringStringDoubleTriple implements WritableComparable<StringString
 		return Objects.hash(string1, string2, prob);
 	}
 
+	/**
+	 * Affectively orders by:
+	 * <ol>
+	 *     <li>{@link StringStringDoubleTriple#string1}, {@link StringStringDoubleTriple#string2} ascending</li>
+	 *     <li>{@link StringStringDoubleTriple#prob} descending</li>
+	 * </ol>
+	 *
+	 * @param o the object to be compared.
+	 * @return negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+	 */
 	@Override
 	public int compareTo(StringStringDoubleTriple o)
 	{

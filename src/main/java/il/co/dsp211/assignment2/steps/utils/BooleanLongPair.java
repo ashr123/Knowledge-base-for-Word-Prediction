@@ -60,7 +60,8 @@ public class BooleanLongPair implements WritableComparable<BooleanLongPair>
 		if (!(o instanceof BooleanLongPair))
 			return false;
 		BooleanLongPair that = (BooleanLongPair) o;
-		return key == that.key && value == that.value;
+		return key == that.key &&
+		       value == that.value;
 	}
 
 	@Override
