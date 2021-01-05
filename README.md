@@ -11,37 +11,37 @@ The produced knowledge-base indicates the probability of each word trigram found
 2. Compile the project and create a jar with `il/co/dsp211/assignment2/steps/step1/EMR.java` as your main class.
 3. Upload your jar to your S3 bucket.
 4. Fill `config.properties` file with the followings:
-    1. `bucketName` - the name of your bucket you've created at step 1.
-    2. `isWithCombiners` - with one of the following options:
-        - `TRUE` - if you want to run this cluster **with** combiners.
-        - `FALSE` - if you want to run this cluster **without** combiners.
-        - `BOTH` - if you want to run **both** options, in such case this programm will create 2 folders for the products of this program, one for each option.
-    3. `jarFileName` - the name of the jar you've created at step 2 **without extension**.
+    1. `bucketName` - The name of your bucket you've created at step 1, for saving temporary and final results and logs.
+    2. `isWithCombiners` - With one of the following options:
+        - `TRUE` - If you want to run this cluster **with** combiners.
+        - `FALSE` - If you want to run this cluster **without** combiners.
+        - `BOTH` - If you want to run **both** options, in such case this program will create 2 folders for the products of this program, one for each option.
+    3. `jarFileName` - The name of the jar you've created at step 2 **without extension**.
+    4. `instanceCount` - The number of EC2 instances in the cluster.
+    5. `region` - The region of your cluster you want to create.
 5. Run `il/co/dsp211/assignment2/Main.java`.
 6. The final output will be presented inside `FinalOutput` folder.
 
 ## Map-Reduce Program Flow:
-
 ### Step 1: Filter & Divide 
 - For each record we're checking if it consists of 3 words (TriGram) with hebrew letters without special characters in order to evaluate a valid trigram entities.
 - We divide the corpus in to two pars with a mod 2 operation and combine occurrences in both parts in order to get the sum of all the trigrams.
 
 ### Step 2: Calculate variables
-- We calculate the Tr and Nr values in order to prepare for the **deleted estimation** method.
+- We calculate the T_r and N_r values in order to prepare for the **deleted estimation** method.
 
 ### Step 3: Join Trigrams with Tr and Nr
-- Match trigram with their Tr and Nr for a specific r.
+- Match trigram with their T_r and Nr for a specific r.
 
 ### Step 4: Probability Calculation
 - We calculate the probability and match it with it's Trigram.
 
-<img src="https://www.cs.bgu.ac.il/~dsp211/wiki.files/del.png" alt="">
+<img src="https://www.cs.bgu.ac.il/~dsp211/wiki.files/del.png">
 
 ### Step 5: Sorting
 - We sort the trigrams by their first word, then second and lastly with their probability.
 
 ## Statistics With/Without Combiners:
-
 1. Map-Reduce Job1DivideCorpus :
     * Map input records = 163,471,963 | 163,471,963
     * Map output records = 71,119,513 | 71,119,513
@@ -68,7 +68,7 @@ The produced knowledge-base indicates the probability of each word trigram found
     * Map output bytes = 118,694,754 | 118,694,754
     * Combine input records = NonExisting | NonExisting
     * Combine output records = NonExisting | NonExisting
-    * Reduce input records=3,379,117 | 3,379,117
+    * Reduce input records = 3,379,117 | 3,379,117
     * Reduce output records = 3,372,236 | 3,372,236
 
 
@@ -103,7 +103,7 @@ Both programs ran approximately at a similar time, so we would recommend using e
     - אולי את יודעת	4.883619239192564E-7
     - אולי את יכולה	3.220178036782423E-7
     - אולי את צודקת	3.1002937759053363E-7
-    - אולי את לא		2.799282451316188E-7
+    - אולי את לא	2.799282451316188E-7
 
 
 2. [אולי, בעוד]

@@ -48,7 +48,7 @@ public class Main
 
 		// create an EMR client using the credentials and region specified in order to create the cluster
 		System.out.println("Cluster created with ID: " + AmazonElasticMapReduceClientBuilder.standard()
-				.withRegion(Regions.US_EAST_1)
+				.withRegion(Regions.valueOf(properties.getProperty("region").toUpperCase()))
 				.build()
 				// create the cluster
 				.runJobFlow(new RunJobFlowRequest()

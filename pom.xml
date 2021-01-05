@@ -17,6 +17,33 @@
 		<hadoop.version>3.2.1</hadoop.version>
 	</properties>
 
+	<developers>
+		<developer>
+			<id>ashr</id>
+			<name>Roy Ash</name>
+			<email>roy.ash456@gmail.com</email>
+			<url>https://www.linkedin.com/in/roy-ash-222351148</url>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>Asia/Jerusalem</timezone>
+			<properties>
+				<cellphone>+972546815181</cellphone>
+			</properties>
+		</developer>
+		<developer>
+			<name>Amit Binenfeld</name>
+			<email>amitbin20@gmail.com</email>
+			<url>https://www.linkedin.com/in/amit-binenfeld-09301a1b2</url>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>Asia/Jerusalem</timezone>
+		</developer>
+	</developers>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
