@@ -26,10 +26,9 @@ public class Main
 		{
 			properties.load(input);
 		}
-		WithCombiners withCombiners = WithCombiners.valueOf(properties.getProperty("isWithCombiners").toUpperCase());
 		final Collection<StepConfig> steps = new LinkedList<>();
 
-		switch (withCombiners)
+		switch (WithCombiners.valueOf(properties.getProperty("isWithCombiners").toUpperCase()))
 		{
 			case TRUE:
 				steps.add(new StepConfig("EMR with combiners", new HadoopJarStepConfig("s3://" + properties.getProperty("bucketName") + "/" + properties.getProperty("jarFileName") + ".jar")
@@ -61,7 +60,7 @@ public class Main
 						.withServiceRole("EMR_DefaultRole") // replace the default with a custom IAM service role if one is used
 						.withJobFlowRole("EMR_EC2_DefaultRole") // replace the default with a custom EMR role for the EC2 instance profile if one is used
 						.withInstances(new JobFlowInstancesConfig()
-								.withInstanceCount(3)
+								.withInstanceCount(Integer.getInteger(properties.getProperty("instanceCount")))
 								.withKeepJobFlowAliveWhenNoSteps(false)
 								.withMasterInstanceType(InstanceType.M5Xlarge.toString())
 								.withSlaveInstanceType(InstanceType.M5Xlarge.toString())))
