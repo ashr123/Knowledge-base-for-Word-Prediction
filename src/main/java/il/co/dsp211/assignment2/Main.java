@@ -15,9 +15,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Properties;
 
-/**
- * aws s3 mv out/artifacts/Knowledge_base_for_Word_Prediction_jar/EMR.jar s3://word-prediction
- */
+
 public class Main
 {
 	public static void main(String... args) throws IOException
@@ -46,6 +44,7 @@ public class Main
 						.withArgs("s3://" + properties.getProperty("bucketName") + "/withCombiners/", Boolean.toString(true))));
 				steps.add(new StepConfig("EMR without combiners", new HadoopJarStepConfig("s3://" + properties.getProperty("bucketName") + "/" + properties.getProperty("jarFileName") + ".jar")
 						.withArgs("s3://" + properties.getProperty("bucketName") + "/withoutCombiners/", Boolean.toString(false))));
+				break;
 		}
 
 		// create an EMR client using the credentials and region specified in order to create the cluster
