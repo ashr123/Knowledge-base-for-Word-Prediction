@@ -17,7 +17,7 @@ public class Job2CalcT_rN_rWithCombiner
 		/**
 		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
 		 * @param value   ⟨r₀, r₁⟩⟩
-		 * @param context ⟨⟨group, r⟩, r in <b>other</b> group⟩
+		 * @param context ⟨⟨group, r⟩, ⟨r in <b>other</b> group, 1⟩⟩
 		 */
 		@Override
 		protected void map(Text key, LongLongPair value, Context context) throws IOException, InterruptedException
