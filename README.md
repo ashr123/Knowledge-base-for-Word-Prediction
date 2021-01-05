@@ -55,7 +55,10 @@ corpus. In addition, We examined the quality of our algorithm according to stati
 
 ## Statistics With | Without Combiners:
 
-- We did it on `AWS cluster` with `emr-6.2.0` configuration (the latest configuration at this moment) with `Hadoop v3.2.1` and with 3 instances of `M5.XLarge`, it took about 6 minutes with combiners and also without them to perform this task.
+- We did it on `AWS cluster` with `emr-6.2.0` configuration (the latest configuration at this moment)
+  with `Hadoop v3.2.1` and with 3 instances of `M5.XLarge`, it took about 6 minutes with combiners and also without them
+  to perform this task.
+
 1. Map-Reduce Job1DivideCorpus:
 	* Map input records = 163,471,963 | 163,471,963
 	* Map output records = 71,119,513 | 71,119,513
