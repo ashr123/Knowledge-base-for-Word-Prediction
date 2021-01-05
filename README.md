@@ -55,6 +55,7 @@ corpus. In addition, We examined the quality of our algorithm according to stati
 
 ## Statistics With | Without Combiners:
 
+We've used 3 instances to perform this task.
 1. Map-Reduce Job1DivideCorpus:
 	* Map input records = 163,471,963 | 163,471,963
 	* Map output records = 71,119,513 | 71,119,513
