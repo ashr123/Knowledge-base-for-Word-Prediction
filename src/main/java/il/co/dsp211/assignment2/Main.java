@@ -60,7 +60,7 @@ public class Main
 						.withServiceRole("EMR_DefaultRole") // replace the default with a custom IAM service role if one is used
 						.withJobFlowRole("EMR_EC2_DefaultRole") // replace the default with a custom EMR role for the EC2 instance profile if one is used
 						.withInstances(new JobFlowInstancesConfig()
-								.withInstanceCount(Integer.getInteger(properties.getProperty("instanceCount")))
+								.withInstanceCount(Integer.parseInt(properties.getProperty("instanceCount")))
 								.withKeepJobFlowAliveWhenNoSteps(false)
 								.withMasterInstanceType(InstanceType.M5Xlarge.toString())
 								.withSlaveInstanceType(InstanceType.M5Xlarge.toString())))
