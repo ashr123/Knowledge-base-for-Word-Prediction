@@ -37,11 +37,11 @@ corpus. In addition, We examined the quality of our algorithm according to stati
 
 ### Step 2: Calculate variables
 
-- We calculate the T_r and N_r values in order to prepare for the **deleted estimation** method.
+- We calculate the T<sub>r</sub> and N<sub>r</sub> values in order to prepare for the **deleted estimation** method.
 
-### Step 3: Join Trigrams with Tr and Nr
+### Step 3: Join Trigrams with T<sub>r</sub> and N<sub>r</sub>
 
-- Match trigram with their T_r and Nr for a specific r.
+- Match trigram with their T<sub>r</sub> and N<sub>r</sub> for a specific r.
 
 ### Step 4: Probability Calculation
 
