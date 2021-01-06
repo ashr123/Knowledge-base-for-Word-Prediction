@@ -22,6 +22,7 @@ public class EMR
 	public static void main(String... args) throws IOException, ClassNotFoundException, InterruptedException
 	{
 		final boolean isWithCombiners = Boolean.parseBoolean(args[1]);
+		boolean jobStatus;
 		final Configuration conf = new Configuration();
 		conf.set("singleLetterInAWordRegex", args[2]);
 
@@ -49,11 +50,13 @@ public class EMR
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 1...");
-		System.out.println("Job 1 completed with success status: " + job1.waitForCompletion(true) + "!");
+		System.out.println("Job 1 completed with success status: " + (jobStatus = job1.waitForCompletion(true)) + "!");
 
 		conf.setLong("N", job1.getCounters().findCounter(NCounter.N_COUNTER).getValue());
 
 		System.out.println("Counter value is: " + conf.getLong("N", -1));
+		if (!jobStatus)
+			return;
 
 		//--------------------------------------------------------------------------------------------------------------
 
@@ -80,7 +83,9 @@ public class EMR
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 2...");
-		System.out.println("Job 2 completed with success status: " + job2.waitForCompletion(true) + "!");
+		System.out.println("Job 2 completed with success status: " + (jobStatus = job2.waitForCompletion(true)) + "!");
+		if (!jobStatus)
+			return;
 
 		//--------------------------------------------------------------------------------------------------------------
 
@@ -105,7 +110,9 @@ public class EMR
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 3...");
-		System.out.println("Job 3 completed with success status: " + job3.waitForCompletion(true) + "!");
+		System.out.println("Job 3 completed with success status: " + (jobStatus = job3.waitForCompletion(true)) + "!");
+		if (!jobStatus)
+			return;
 
 		//--------------------------------------------------------------------------------------------------------------
 
@@ -128,7 +135,9 @@ public class EMR
 
 		System.out.println("Done building!\n" +
 		                   "Starting job 4...");
-		System.out.println("Job 4 completed with success status: " + job4.waitForCompletion(true) + "!");
+		System.out.println("Job 4 completed with success status: " + (jobStatus = job4.waitForCompletion(true)) + "!");
+		if (!jobStatus)
+			return;
 
 		//--------------------------------------------------------------------------------------------------------------
 
