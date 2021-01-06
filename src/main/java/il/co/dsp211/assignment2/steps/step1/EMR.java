@@ -23,6 +23,7 @@ public class EMR
 	{
 		final boolean isWithCombiners = Boolean.parseBoolean(args[1]);
 		final Configuration conf = new Configuration();
+		conf.set("singleLetterInAWordRegex", args[2]);
 
 		System.out.println("Building job 1...");
 
@@ -43,7 +44,7 @@ public class EMR
 		job1.setOutputKeyClass(Text.class);
 		job1.setOutputValueClass(LongLongPair.class);
 
-		FileInputFormat.addInputPath(job1, new Path("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/3gram/data"));
+		FileInputFormat.addInputPath(job1, new Path("s3://datasets.elasticmapreduce/ngrams/books/20090715/" + args[3] + "/3gram/data"));
 		FileOutputFormat.setOutputPath(job1, new Path(args[0] + "Step1Output"));
 
 		System.out.println("Done building!\n" +

@@ -10,6 +10,8 @@ corpus. In addition, We examined the quality of our algorithm according to stati
 
 ## Running instructions:
 
+Look at https://aws.amazon.com/datasets/google-books-ngrams/ for possible values.
+
 1. Create an S3 bucket.
 2. Compile the project and create a jar with `il/co/dsp211/assignment2/steps/step1/EMR.java` as your main class.
 3. Upload your jar to your S3 bucket.
@@ -23,6 +25,8 @@ corpus. In addition, We examined the quality of our algorithm according to stati
 	3. `jarFileName` - The name of the jar you've created at step 2 **without extension**.
 	4. `instanceCount` - The number of EC2 instances in the cluster.
 	5. `region` - The region of your cluster you want to create.
+	6. `singleLetterInAWordRegex` - A regex expression, that determains what are the legal characters in a word.
+	7. `wordsBucket` - The bucket containing the records in "short" form, i.e `heb-all` or `eng-us-all`.
 5. Run `il/co/dsp211/assignment2/Main.java`.
 6. The final output will be presented inside `FinalOutput` folder.
 
@@ -47,7 +51,7 @@ corpus. In addition, We examined the quality of our algorithm according to stati
 
 - We calculate the probability and match it with it's Trigram.
 
-<img src="https://www.cs.bgu.ac.il/~dsp211/wiki.files/del.png">
+<img src="https://www.cs.bgu.ac.il/~dsp211/wiki.files/del.png" alt="The formula">
 
 ### Step 5: Sorting
 

@@ -10,6 +10,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +21,13 @@ public class Job1DivideCorpus
 {
 	public static class DividerMapper extends Mapper<LongWritable, Text, Text, BooleanLongPair>
 	{
-		private static final Pattern HEBREW_PATTERN = Pattern.compile("(?<words>[א-ת]+ [א-ת]+ [א-ת]+)\\t\\d{4}\\t(?<occurrences>\\d+).*");
+		private Pattern hebrewPattern;
+
+		@Override
+		protected void setup(Context context)
+		{
+			hebrewPattern = Pattern.compile("(?<words>" + String.join("+ ", Collections.nCopies(3, context.getConfiguration().get("singleLetterInAWordRegex"))) + "+)\\t\\d{4}\\t(?<occurrences>\\d+).*");
+		}
 
 		/**
 		 * @param key     ⟨line number,
@@ -30,7 +37,7 @@ public class Job1DivideCorpus
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 		{
-			final Matcher matcher = HEBREW_PATTERN.matcher(value.toString());
+			final Matcher matcher = hebrewPattern.matcher(value.toString());
 			if (matcher.matches())
 				context.write(new Text(matcher.group("words")), new BooleanLongPair(key.get() % 2 == 0, Long.parseLong(matcher.group("occurrences"))));
 		}

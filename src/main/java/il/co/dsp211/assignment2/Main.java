@@ -32,17 +32,29 @@ public class Main
 		{
 			case TRUE:
 				steps.add(new StepConfig("EMR with combiners", new HadoopJarStepConfig("s3://" + properties.getProperty("bucketName") + "/" + properties.getProperty("jarFileName") + ".jar")
-						.withArgs("s3://" + properties.getProperty("bucketName") + "/", Boolean.toString(true))));
+						.withArgs("s3://" + properties.getProperty("bucketName") + "/",
+								Boolean.toString(true),
+								properties.getProperty("singleLetterInAWordRegex"),
+								properties.getProperty("wordsBucket"))));
 				break;
 			case FALSE:
 				steps.add(new StepConfig("EMR without combiners", new HadoopJarStepConfig("s3://" + properties.getProperty("bucketName") + "/" + properties.getProperty("jarFileName") + ".jar")
-						.withArgs("s3://" + properties.getProperty("bucketName") + "/", Boolean.toString(false))));
+						.withArgs("s3://" + properties.getProperty("bucketName") + "/",
+								Boolean.toString(false),
+								properties.getProperty("singleLetterInAWordRegex"),
+								properties.getProperty("wordsBucket"))));
 				break;
 			case BOTH:
 				steps.add(new StepConfig("EMR with combiners", new HadoopJarStepConfig("s3://" + properties.getProperty("bucketName") + "/" + properties.getProperty("jarFileName") + ".jar")
-						.withArgs("s3://" + properties.getProperty("bucketName") + "/withCombiners/", Boolean.toString(true))));
+						.withArgs("s3://" + properties.getProperty("bucketName") + "/withCombiners/",
+								Boolean.toString(true),
+								properties.getProperty("singleLetterInAWordRegex"),
+								properties.getProperty("wordsBucket"))));
 				steps.add(new StepConfig("EMR without combiners", new HadoopJarStepConfig("s3://" + properties.getProperty("bucketName") + "/" + properties.getProperty("jarFileName") + ".jar")
-						.withArgs("s3://" + properties.getProperty("bucketName") + "/withoutCombiners/", Boolean.toString(false))));
+						.withArgs("s3://" + properties.getProperty("bucketName") + "/withoutCombiners/",
+								Boolean.toString(false),
+								properties.getProperty("singleLetterInAWordRegex"),
+								properties.getProperty("wordsBucket"))));
 				break;
 		}
 
