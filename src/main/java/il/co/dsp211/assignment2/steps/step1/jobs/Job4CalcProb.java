@@ -21,9 +21,9 @@ public class Job4CalcProb
 		}
 
 		/**
-		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
-		 * @param values  [⟨T_r, N_r⟩]⟩ (1-2 pairs)
-		 * @param context ⟨⟨w₁, w₂, w₃⟩, p⟩
+		 * @param key     ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩,
+		 * @param values  [⟨T<sub>r</sub>, N<sub>r</sub>⟩]⟩ (1-2 pairs)
+		 * @param context ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩, p⟩
 		 */
 		@Override
 		protected void reduce(Text key, Iterable<LongLongPair> values, Context context) throws IOException, InterruptedException

@@ -13,9 +13,9 @@ public class Job5Sort
 	public static class CastlingMapper extends Mapper<Text, DoubleWritable, StringStringDoubleTriple, Text>
 	{
 		/**
-		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
+		 * @param key     ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩,
 		 * @param value   p⟩
-		 * @param context ⟨⟨w₁, w₂, p⟩, w₃⟩
+		 * @param context ⟨⟨w<sub>1</sub>, w<sub>2</sub>, p⟩, w<sub>3</sub>⟩
 		 */
 		@Override
 		protected void map(Text key, DoubleWritable value, Context context) throws IOException, InterruptedException
@@ -28,9 +28,9 @@ public class Job5Sort
 	public static class FinisherReducer extends Reducer<StringStringDoubleTriple, Text, Text, DoubleWritable>
 	{
 		/**
-		 * @param key     ⟨⟨w₁, w₂, p⟩,
-		 * @param values  [w₃]⟩
-		 * @param context ⟨⟨w₁, w₂, w₃⟩, p⟩ sorted as requested
+		 * @param key     ⟨⟨w<sub>1</sub>, w<sub>2</sub>, p⟩,
+		 * @param values  [w<sub>3</sub>]⟩
+		 * @param context ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩, p⟩ sorted as requested
 		 * @see StringStringDoubleTriple#compareTo(StringStringDoubleTriple)
 		 */
 		@Override

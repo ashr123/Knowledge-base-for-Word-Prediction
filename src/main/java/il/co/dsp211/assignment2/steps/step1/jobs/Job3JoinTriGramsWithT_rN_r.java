@@ -17,9 +17,9 @@ public class Job3JoinTriGramsWithT_rN_r
 	public static class TriGramMapper extends Mapper<Text, LongLongPair, BooleanBooleanLongTriple, Text>
 	{
 		/**
-		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
-		 * @param value   ⟨r₀, r₁⟩⟩
-		 * @param context ⟨⟨{@code true}, {@code true}, r₀⟩, ⟨w₁, w₂, w₃⟩⟩, ⟨⟨{@code true}, {@code false}, r₁⟩, ⟨w₁, w₂, w₃⟩⟩
+		 * @param key     ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩,
+		 * @param value   ⟨r<sub>0</sub>, r<sub>1</sub>⟩⟩
+		 * @param context ⟨⟨{@code true}, {@code true}, r<sub>0</sub>⟩, ⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩⟩, ⟨⟨{@code true}, {@code false}, r<sub>1</sub>⟩, ⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩⟩
 		 */
 		@Override
 		protected void map(Text key, LongLongPair value, Context context) throws IOException, InterruptedException
@@ -35,8 +35,8 @@ public class Job3JoinTriGramsWithT_rN_r
 	{
 		/**
 		 * @param key     ⟨⟨group, r⟩,
-		 * @param value   ⟨T_r, N_r⟩⟩
-		 * @param context ⟨⟨{@code false}, group, r⟩, ⟨T_r, N_r⟩ (as {@link Text})⟩
+		 * @param value   ⟨T<sub>r</sub>, N<sub>r</sub>⟩⟩
+		 * @param context ⟨⟨{@code false}, group, r⟩, ⟨T<sub>r</sub>, N<sub>r</sub>⟩ (as {@link Text})⟩
 		 */
 		@Override
 		protected void map(BooleanLongPair key, LongLongPair value, Context context) throws IOException, InterruptedException
@@ -53,14 +53,14 @@ public class Job3JoinTriGramsWithT_rN_r
 
 		/**
 		 * @param key     ⟨⟨isTriGram, group, r⟩,
-		 * @param values  [⟨T_r, N_r⟩ (1 pair as {@link Text}) | ...⟨w₁, w₂, w₃⟩]⟩
-		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨T_r, N_r⟩⟩
+		 * @param values  [⟨T<sub>r</sub>, N<sub>r</sub>⟩ (1 pair as {@link Text}) | ...⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩]⟩
+		 * @param context ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩, ⟨T<sub>r</sub>, N<sub>r</sub>⟩⟩
 		 * @see BooleanBooleanLongTriple#compareTo(BooleanBooleanLongTriple)
 		 */
 		@Override
 		protected void reduce(BooleanBooleanLongTriple key, Iterable<Text> values, Context context) throws IOException, InterruptedException
 		{
-			if (key.isTriGram()) // value is [...⟨w₁, w₂, w₃⟩]
+			if (key.isTriGram()) // value is [...⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩]
 				if (currentIsGroup0 == key.isGroup0() && currentR == key.getR())
 					for (final Text triGram : values)
 						context.write(triGram, currentT_rN_r);

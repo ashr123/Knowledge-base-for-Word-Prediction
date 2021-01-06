@@ -15,8 +15,8 @@ public class Job2CalcT_rN_r
 	public static class SplitRsMapper extends Mapper<Text, LongLongPair, BooleanLongPair, LongWritable>
 	{
 		/**
-		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
-		 * @param value   ⟨r₀, r₁⟩⟩
+		 * @param key     ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩,
+		 * @param value   ⟨r<sub>0</sub>, r<sub>1</sub>⟩⟩
 		 * @param context ⟨⟨group, r⟩, r in <b>other</b> group⟩
 		 */
 		@Override
@@ -34,7 +34,7 @@ public class Job2CalcT_rN_r
 		/**
 		 * @param key     ⟨⟨group, r⟩,
 		 * @param values  [r in <b>other</b> group]⟩
-		 * @param context ⟨⟨group, r⟩, ⟨T_r, N_r⟩⟩
+		 * @param context ⟨⟨group, r⟩, ⟨T<sub>r</sub>, N<sub>r</sub>⟩⟩
 		 */
 		@Override
 		protected void reduce(BooleanLongPair key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException

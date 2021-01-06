@@ -31,8 +31,8 @@ public class Job1DivideCorpus
 
 		/**
 		 * @param key     ⟨line number,
-		 * @param value   ⟨⟨w₁, w₂, w₃⟩, year, occurrences in this year, pages in this year, books in this year⟩⟩
-		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨group, occurrences in this year⟩⟩
+		 * @param value   ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩, year, occurrences in this year, pages in this year, books in this year⟩⟩
+		 * @param context ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩, ⟨group, occurrences in this year⟩⟩
 		 */
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
@@ -46,9 +46,9 @@ public class Job1DivideCorpus
 	public static class CountCombiner extends Reducer<Text, BooleanLongPair, Text, BooleanLongPair>
 	{
 		/**
-		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
+		 * @param key     ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩,
 		 * @param values  [⟨group, occurrences⟩]⟩
-		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨r₀, r₁⟩⟩
+		 * @param context ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩, ⟨r<sub>0</sub>, r<sub>1</sub>⟩⟩
 		 */
 		@Override
 		protected void reduce(Text key, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
@@ -73,9 +73,9 @@ public class Job1DivideCorpus
 		}
 
 		/**
-		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
+		 * @param key     ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩,
 		 * @param values  [⟨group, occurrences⟩]⟩
-		 * @param context ⟨⟨w₁, w₂, w₃⟩, ⟨r₀, r₁⟩⟩
+		 * @param context ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩, ⟨r<sub>0</sub>, r<sub>1</sub>⟩⟩
 		 */
 		@Override
 		protected void reduce(Text key, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException

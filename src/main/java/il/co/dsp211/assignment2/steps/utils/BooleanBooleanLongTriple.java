@@ -64,7 +64,7 @@ public class BooleanBooleanLongTriple implements WritableComparable<BooleanBoole
 	}
 
 	/**
-	 * for record ordering: value is [⟨T_r, N_r⟩] with 1 pair for each r and group. Suppose to happen before a record with TriGrams
+	 * for record ordering: value is [⟨T<sub>r</sub>, N<sub>r</sub>⟩] with 1 pair for each r and group. Suppose to happen before a record with TriGrams
 	 *
 	 * @param o the object to be compared.
 	 * @return negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.

@@ -2,7 +2,6 @@ package il.co.dsp211.assignment2.steps.step1.jobs;
 
 import il.co.dsp211.assignment2.steps.utils.BooleanLongPair;
 import il.co.dsp211.assignment2.steps.utils.LongLongPair;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -15,8 +14,8 @@ public class Job2CalcT_rN_rWithCombiner
 	public static class SplitRsMapper extends Mapper<Text, LongLongPair, BooleanLongPair, LongLongPair>
 	{
 		/**
-		 * @param key     ⟨⟨w₁, w₂, w₃⟩,
-		 * @param value   ⟨r₀, r₁⟩⟩
+		 * @param key     ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩,
+		 * @param value   ⟨r<sub>0</sub>, r<sub>1</sub>⟩⟩
 		 * @param context ⟨⟨group, r⟩, ⟨r in <b>other</b> group, 1⟩⟩
 		 */
 		@Override
@@ -33,8 +32,8 @@ public class Job2CalcT_rN_rWithCombiner
 	{
 		/**
 		 * @param key     ⟨⟨group, r⟩,
-		 * @param values  [⟨T_r, N_r⟩ (partial)]⟩
-		 * @param context ⟨⟨group, r⟩, ⟨T_r, N_r⟩⟩
+		 * @param values  [⟨T<sub>r</sub>, N<sub>r</sub>⟩ (partial)]⟩
+		 * @param context ⟨⟨group, r⟩, ⟨T<sub>r</sub>, N<sub>r</sub>⟩⟩
 		 */
 		@Override
 		protected void reduce(BooleanLongPair key, Iterable<LongLongPair> values, Context context) throws IOException, InterruptedException
