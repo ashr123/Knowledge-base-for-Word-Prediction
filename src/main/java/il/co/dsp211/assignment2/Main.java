@@ -55,7 +55,6 @@ public class Main
 								Boolean.toString(false),
 								properties.getProperty("singleLetterInAWordRegex"),
 								properties.getProperty("wordsBucket"))));
-				break;
 		}
 
 		// create an EMR client using the credentials and region specified in order to create the cluster
