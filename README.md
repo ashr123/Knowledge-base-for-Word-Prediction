@@ -18,9 +18,9 @@ Look at https://aws.amazon.com/datasets/google-books-ngrams/ for possible values
 4. Fill `config.properties` file with the followings:
 	1. `bucketName` - The name of your bucket you've created at step 1, for saving temporary and final results and logs.
 	2. `isWithCombiners` - With one of the following options:
-		- `TRUE` - If you want to run this cluster **with** combiners.
-		- `FALSE` - If you want to run this cluster **without** combiners.
-		- `BOTH` - If you want to run **both** options, in such case this program will create 2 folders for the products
+		* `TRUE` - If you want to run this cluster **with** combiners.
+		* `FALSE` - If you want to run this cluster **without** combiners.
+		* `BOTH` - If you want to run **both** options, in such case this program will create 2 folders for the products
 		  of this program, one for each option.
 	3. `jarFileName` - The name of the jar you've created at step 2 **without extension**.
 	4. `instanceCount` - The number of EC2 instances in the cluster.
@@ -34,24 +34,32 @@ Look at https://aws.amazon.com/datasets/google-books-ngrams/ for possible values
 
 ### Step 1: Filter & Divide
 
-- For each record we're checking if it consists of 3 words (TriGram) with hebrew letters without special characters in
+* For each record we're checking if it consists of 3 words (TriGram) with hebrew letters without special characters in
   order to evaluate a valid trigram entities.
-- We divide the corpus in to two pars with a mod 2 operation and combine occurrences in both parts in order to get the
+* We divide the corpus in to two pars with a mod 2 operation and combine occurrences in both parts in order to get the
   sum of all the trigrams.
 
 ### Step 2: Calculate variables
 
-- We calculate the T<sub>r</sub> and N<sub>r</sub> values in order to prepare for the **deleted estimation** method.
+* We calculate the T<sub>r</sub> and N<sub>r</sub> values in order to prepare for the **deleted estimation** method.
 
 ### Step 3: Join Trigrams with T<sub>r</sub> and N<sub>r</sub>
 
-- Match trigram with their T<sub>r</sub> and N<sub>r</sub> for a specific r.
+* Match trigram with their T<sub>r</sub> and N<sub>r</sub> for a specific r.
 
 ### Step 4: Probability Calculation
 
-- We calculate the probability and match it with it's Trigram.
+* We calculate the probability and match it with it's Trigram.
 
-<img src="del.png" alt="The formula">
+![The Formula](del.png "The Formula")
+
+Where:
+
+* N is the number of n-grams in the whole corpus.
+* N<sub>r</sub><sup>0</sup> is the number of n-grams occuring r times in the first part of the corpus.
+* T<sub>r</sub><sup>01</sup> is the total number of those n-grams from the first part (those of Nr0) in the second part of the corpus.
+* N<sub>r</sub><sup>1</sup> is the number of n-grams occuring r times in the second part of the corpus.
+* T<sub>r</sub><sup>10</sup> is the total number of those n-grams from the second part (those of Nr1) in the first part of the corpus.
 
 ### Step 5: Sorting
 
@@ -64,7 +72,7 @@ Look at https://aws.amazon.com/datasets/google-books-ngrams/ for possible values
   to perform this task.
 
 1. Map-Reduce Job1DivideCorpus:
-   
+
    |                               | With combiners | Without combiners |
    |-------------------------------|----------------|-------------------|
    | Map input records             | 163,471,963    | 163,471,963       |
