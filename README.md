@@ -51,7 +51,7 @@ Look at https://aws.amazon.com/datasets/google-books-ngrams/ for possible values
 
 - We calculate the probability and match it with it's Trigram.
 
-<img src="https://www.cs.bgu.ac.il/~dsp211/wiki.files/del.png" alt="The formula">
+<img src="del.png" alt="The formula">
 
 ### Step 5: Sorting
 
