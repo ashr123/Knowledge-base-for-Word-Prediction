@@ -57,9 +57,9 @@ Where:
 
 * N is the number of n-grams in the whole corpus.
 * N<sub>r</sub><sup>0</sup> is the number of n-grams occuring r times in the first part of the corpus.
-* T<sub>r</sub><sup>01</sup> is the total number of those n-grams from the first part (those of Nr0) in the second part of the corpus.
+* T<sub>r</sub><sup>01</sup> is the total number of those n-grams from the first part (those of N<sub>r</sub><sup>0</sup>) in the second part of the corpus.
 * N<sub>r</sub><sup>1</sup> is the number of n-grams occuring r times in the second part of the corpus.
-* T<sub>r</sub><sup>10</sup> is the total number of those n-grams from the second part (those of Nr1) in the first part of the corpus.
+* T<sub>r</sub><sup>10</sup> is the total number of those n-grams from the second part (those of N<sub>r</sub><sup>1</sup>) in the first part of the corpus.
 
 ### Step 5: Sorting
 
