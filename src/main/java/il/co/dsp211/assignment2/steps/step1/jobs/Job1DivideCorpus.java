@@ -47,8 +47,8 @@ public class Job1DivideCorpus
 	{
 		/**
 		 * @param key     ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩,
-		 * @param values  [⟨group, occurrences⟩]⟩
-		 * @param context ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩, ⟨r<sub>0</sub>, r<sub>1</sub>⟩⟩
+		 * @param values  [⟨group, occurrences in this year⟩]⟩
+		 * @param context ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩, ⟨{@code true}, partial r<sub>0</sub>⟩⟩, ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩, ⟨{@code false}, partial r<sub>1</sub>⟩⟩
 		 */
 		@Override
 		protected void reduce(Text key, Iterable<BooleanLongPair> values, Context context) throws IOException, InterruptedException
@@ -74,7 +74,7 @@ public class Job1DivideCorpus
 
 		/**
 		 * @param key     ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩,
-		 * @param values  [⟨group, occurrences⟩]⟩
+		 * @param values  [⟨group, partial r<sub>group</sub>⟩]⟩
 		 * @param context ⟨⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩, ⟨r<sub>0</sub>, r<sub>1</sub>⟩⟩
 		 */
 		@Override
