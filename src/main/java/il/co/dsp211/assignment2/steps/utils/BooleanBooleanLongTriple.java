@@ -74,10 +74,10 @@ public class BooleanBooleanLongTriple implements WritableComparable<BooleanBoole
 	{
 		final int
 				compareR = Long.compare(r, o.r),
-				compareIsGroup0;
+				compareIsGroup1;
 
 		return compareR != 0 ? compareR :
-		       (compareIsGroup0 = Boolean.compare(isGroup1, o.isGroup1)) != 0 ? compareIsGroup0 :
+		       (compareIsGroup1 = Boolean.compare(isGroup1, o.isGroup1)) != 0 ? compareIsGroup1 :
 		       Boolean.compare(isTriGram, o.isTriGram);
 	}
 
