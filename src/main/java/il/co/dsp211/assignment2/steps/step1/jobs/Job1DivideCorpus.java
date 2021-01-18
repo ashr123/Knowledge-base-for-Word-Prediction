@@ -39,7 +39,7 @@ public class Job1DivideCorpus
 		{
 			final Matcher matcher = pattern.matcher(value.toString());
 			if (matcher.matches())
-				context.write(new Text(matcher.group("words")), new BooleanLongPair(key.get() % 2 == 0, Long.parseLong(matcher.group("occurrences"))));
+				context.write(new Text(matcher.group("words")), new BooleanLongPair(key.get() % 2 == 1, Long.parseLong(matcher.group("occurrences"))));
 		}
 	}
 

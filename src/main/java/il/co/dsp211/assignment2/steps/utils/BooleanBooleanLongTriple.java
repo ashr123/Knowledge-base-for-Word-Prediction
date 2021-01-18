@@ -9,17 +9,17 @@ import java.util.Objects;
 
 public class BooleanBooleanLongTriple implements WritableComparable<BooleanBooleanLongTriple>
 {
-	private boolean isTriGram, isGroup0;
+	private boolean isTriGram, isGroup1;
 	private long r;
 
 	public BooleanBooleanLongTriple()
 	{
 	}
 
-	public BooleanBooleanLongTriple(boolean isTriGram, boolean isGroup0, long r)
+	public BooleanBooleanLongTriple(boolean isTriGram, boolean isGroup1, long r)
 	{
 		this.isTriGram = isTriGram;
-		this.isGroup0 = isGroup0;
+		this.isGroup1 = isGroup1;
 		this.r = r;
 	}
 
@@ -34,9 +34,9 @@ public class BooleanBooleanLongTriple implements WritableComparable<BooleanBoole
 		return isTriGram;
 	}
 
-	public boolean isGroup0()
+	public boolean isGroup1()
 	{
-		return isGroup0;
+		return isGroup1;
 	}
 
 	public long getR()
@@ -53,14 +53,14 @@ public class BooleanBooleanLongTriple implements WritableComparable<BooleanBoole
 			return false;
 		BooleanBooleanLongTriple that = (BooleanBooleanLongTriple) o;
 		return isTriGram == that.isTriGram &&
-		       isGroup0 == that.isGroup0 &&
+		       isGroup1 == that.isGroup1 &&
 		       r == that.r;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(isTriGram, isGroup0, r);
+		return Objects.hash(isTriGram, isGroup1, r);
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class BooleanBooleanLongTriple implements WritableComparable<BooleanBoole
 				compareIsGroup0;
 
 		return compareR != 0 ? compareR :
-		       (compareIsGroup0 = Boolean.compare(isGroup0, o.isGroup0)) != 0 ? compareIsGroup0 :
+		       (compareIsGroup0 = Boolean.compare(isGroup1, o.isGroup1)) != 0 ? compareIsGroup0 :
 		       Boolean.compare(isTriGram, o.isTriGram);
 	}
 
@@ -85,7 +85,7 @@ public class BooleanBooleanLongTriple implements WritableComparable<BooleanBoole
 	public void write(DataOutput out) throws IOException
 	{
 		out.writeBoolean(isTriGram);
-		out.writeBoolean(isGroup0);
+		out.writeBoolean(isGroup1);
 		out.writeLong(r);
 	}
 
@@ -93,13 +93,13 @@ public class BooleanBooleanLongTriple implements WritableComparable<BooleanBoole
 	public void readFields(DataInput in) throws IOException
 	{
 		isTriGram = in.readBoolean();
-		isGroup0 = in.readBoolean();
+		isGroup1 = in.readBoolean();
 		r = in.readLong();
 	}
 
 	@Override
 	public String toString()
 	{
-		return isTriGram + "🤠" + isGroup0 + "🤠" + r;
+		return isTriGram + "🤠" + isGroup1 + "🤠" + r;
 	}
 }

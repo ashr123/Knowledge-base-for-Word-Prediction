@@ -48,7 +48,7 @@ public class Job3JoinTriGramsWithT_rN_r
 	public static class JoinReducer extends Reducer<BooleanBooleanLongTriple, Text, Text, LongLongPair>
 	{
 		private LongLongPair currentT_rN_r;
-		private boolean currentIsGroup0;
+		private boolean currentIsGroup1;
 		private long currentR;
 
 		/**
@@ -61,11 +61,11 @@ public class Job3JoinTriGramsWithT_rN_r
 		protected void reduce(BooleanBooleanLongTriple key, Iterable<Text> values, Context context) throws IOException, InterruptedException
 		{
 			if (key.isTriGram()) // value is [...⟨w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>⟩]
-				if (currentIsGroup0 == key.isGroup0() && currentR == key.getR())
+				if (currentIsGroup1 == key.isGroup1() && currentR == key.getR())
 					for (final Text triGram : values)
 						context.write(triGram, currentT_rN_r);
 				else
-					throw new IllegalStateException("Got TriGram-record with isGroup0: " + key.isGroup0() + " and r: " + key.getR() + ", but currently have isGroup0: " + currentIsGroup0 + " and r: " + currentR);
+					throw new IllegalStateException("Got TriGram-record with isGroup1: " + key.isGroup1() + " and r: " + key.getR() + ", but currently have isGroup1: " + currentIsGroup1 + " and r: " + currentR);
 			else // value is [⟨T_r, N_r⟩ (1 pair as Text)]
 			{
 				final Iterator<Text> iterator = values.iterator();
@@ -75,7 +75,7 @@ public class Job3JoinTriGramsWithT_rN_r
 					throw new IllegalStateException("Got more then 1 pair of ⟨T_r, N_r⟩");
 
 				currentR = key.getR();
-				currentIsGroup0 = key.isGroup0();
+				currentIsGroup1 = key.isGroup1();
 			}
 		}
 	}
@@ -93,7 +93,7 @@ public class Job3JoinTriGramsWithT_rN_r
 		@Override
 		public int getPartition(BooleanBooleanLongTriple key, Text value, int numPartitions)
 		{
-			return (Objects.hash(key.isGroup0(), key.getR()) & Integer.MAX_VALUE) % numPartitions;
+			return (Objects.hash(key.isGroup1(), key.getR()) & Integer.MAX_VALUE) % numPartitions;
 		}
 	}
 }
